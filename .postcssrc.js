@@ -1,10 +1,10 @@
 module.exports = {
   plugins: {
     "postcss-pxtorem": {
-      rootValue: 16,
+      rootValue: 32,
       propList: ['*', '!font*', '!letter-spacing'],
       selectorBlackList: ['van-'],
-      minPixelValue: 0,
+      minPixelValue: 2,
       exclude: /node_modules/i
     }
   }

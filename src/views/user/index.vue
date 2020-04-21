@@ -1,15 +1,124 @@
 <template>
-  <div class="container"></div>
+  <div class="user">
+    <div class="container">
+      <!-- 头部信息 -->
+      <header class="header">
+        <van-cell title-class="cell-title" value-class="cell-value" to="/user/userInfo" center is-link>
+          <div class="avatar" slot="title">
+            <van-icon class-prefix="my-icon" name="user" size="40" color="#999"></van-icon>
+            <!-- <img src=""> -->
+          </div>
+          <div class="cell-right" slot="default">
+            <p class="cell-right-title">jacken</p>
+            <div class="tag-list">
+              <span class="tag-cell grade">Lv.5</span>
+              <span class="tag-cell badge">2个徽章</span>
+            </div>
+          </div>
+        </van-cell>
+        <!-- 社交数据统计 -->
+        <desc-list></desc-list>
+      </header>
+      <!-- 出行数据统计 -->
+      <div class="travel-cell-group">
+        <van-cell class="travel-cell city" is-link>
+          <p slot="title">点亮城市</p>
+          <p slot="label">2个</p>
+        </van-cell>
+        <van-cell class="travel-cell mileage" is-link>
+          <p slot="title">出行里程</p>
+          <p slot="label">0公里</p>
+        </van-cell>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+import { Cell, CellGroup, Icon } from 'vant'
+import DescList from './components/desc-list'
+
 export default {
+  name: 'user',
+  components: {
+    'van-cell': Cell,
+    'van-icon': Icon,
+    DescList,
+  },
   data() {
-    return {}
+    return {
+      userInfo: {}, // 用户信息
+      travelData: {}, // 出行数据
+    }
   },
   created() {},
   mounted() {},
 }
 </script>
 
-<style scoped></style>
+<style lang="less" scoped>
+.user {
+  position: relative;
+  height: calc(100% - 100px);
+  background: url('../../assets/img/user_bg.jpg') no-repeat;
+  background-size: 100%;
+  .cell-title {
+    width: 160px;
+    flex: 0 1 auto;
+  }
+  .cell-value {
+    text-align: left;
+  }
+  .container {
+    height: 100%;
+    padding-top: 200px;
+    overflow: auto;
+    .header {
+      width: 710px;
+      margin: auto;
+      border-radius: 20px;
+      overflow: hidden;
+      .avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 60px;
+        background-color: #eee;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .cell-right {
+        color: #333;
+        &-title {
+          font-size: 20px;
+          line-height: 1;
+        }
+        .tag-list {
+          margin-top: 10px;
+          font-size: 12px;
+          color: #fff;
+          .tag-cell {
+            line-height: 1;
+            background-color: #565eff;
+            margin-right: 10px;
+            padding: 0 10px;
+            border-radius: 20px;
+          }
+        }
+      }
+    }
+    .travel-cell-group {
+      display: flex;
+      .travel-cell {
+        flex: 1;
+        border-radius: 10px;
+        margin: 20px;
+        &:last-child {
+          margin-left: 0;
+        }
+      }
+    }
+  }
+}
+</style>
