@@ -4,8 +4,18 @@ const trafficRoutes = [
     name: 'traffic',
     component: () => import('@/views/traffic/index'),
     meta: {
-      title: '路线',
+      title: '导航',
     },
+    children: [
+      {
+        path: 'navigation',
+        name: 'navigation',
+        component: () => import('@/views/traffic/navigation'),
+        meta: {
+          title: '路线规划'
+        }
+      }
+    ]
   },
 ]
 

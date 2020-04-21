@@ -5,9 +5,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const title = '哒哒出行'
-
-const port = process.env.port || process.env.npm_config_port || 8090
+const port = process.env.port || process.env.npm_config_port || 8080
 
 module.exports = {
   publicPath: '/',
@@ -15,14 +13,7 @@ module.exports = {
   assetsDir: 'static',
   pages: {
     index: {
-      // page entry
-      entry: 'src/index/main.js',
-      // template resource
-      template: 'public/index.html',
-      // output filename
-      filename: 'index.html',
-      // html head title
-      title: title,
+      title: '哒哒出行'
     }
   },
   lintOnSave: process.env.NODE_ENV !== 'production',
@@ -37,8 +28,6 @@ module.exports = {
     before: require('./mock/mock-server.js')
   },
   configureWebpack: {
-    // provide the app's title in webpack's name field
-    name: name,
     resolve: {
       alias: {
         '@': resolve('src')
@@ -52,7 +41,7 @@ module.exports = {
     // set svg-sprite-loader
     config.module
       .rule('svg')
-      .exclude.add(resolve('src/icon'))
+      .exclude.add(resolve('src/icons'))
       .end()
     config.module
       .rule('icons')
@@ -60,6 +49,7 @@ module.exports = {
       .include.add(resolve('src/icons'))
       .end()
       .use('svg-sprite-loader')
+      .loader('svg-sprite-loader')
       .options({
         symbolId: 'icon-[name]'
       })

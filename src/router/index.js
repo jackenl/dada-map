@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '@/store/index'
 import getPageTitle from '@/utils/get-page-title';
 import { getToken } from '@/utils/auth';
 
@@ -14,11 +15,11 @@ Vue.use(Router)
 const whiteList = ['/login'] // no redirect whiteList
 
 const commonRoutes = [
-  { path: '/login', component: () => import('@/views/login/index') },
+  { path: '/login', component: () => import('@/views/login') },
   { path: '/404', component: () => import('@/views/error/404') },
   {
     path: '/',
-    component: () => import('@/views/index'),
+    component: () => import('@/views/travel/index'),
     redirect: '/travel',
   },
   { path: '*', redirect: '/404' },
@@ -29,25 +30,28 @@ const router = new Router({
 })
 
 // router beforeEach
-// router.beforeEach((to, from, next) => {
-//   // set page title
-//   document.title = getPageTitle(to.meta.title)
+router.beforeEach((to, from, next) => {
+  // set page title
+  document.title = getPageTitle(to.meta.title)
 
-//   const hasToken = getToken()
-//   if (hasToken) {
-//     if (to.path === '/login') {
-//       next({ path: '/' })
-//     } else {
-//       next()
-//     }
-//   } else {
-//     if (whiteList.indexOf(to.path) !== -1) {
-//       next()
-//     } else {
-//       next({ path: '/login' })
-//     }
-//   }
-// })
+  // const hasToken = getToken()
+  // if (hasToken) {
+  //   if (to.path === '/login') {
+  //     next({ path: '/' })
+  //   } else {
+  //     next()
+  //   }
+  // } else {
+  //   if (whiteList.indexOf(to.path) !== -1) {
+  //     next()
+  //   } else {
+  //     next({ path: '/login' })
+  //   }
+  // }
+  // 进行浏览器定位
+  store.dispatch('position/updateGeoLocation')
+  next()
+})
 
 // router afterEach
 router.afterEach(() => {

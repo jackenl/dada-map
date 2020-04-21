@@ -1,18 +1,16 @@
 module.exports = {
   root: true,
-  extends: 'eslint:recommended',
-  plugins: ['prettier'],
-  rules: {
-    'max-len': 'off',
-    strict: 'error',
-    'prettier/prettier': 'error',
+  parserOptions: {
+    parser: 'babel-eslint',
+    sourceType: 'module',
   },
   env: {
     es6: true,
     browser: true,
+    node: true,
   },
-  parserOptions: {
-    ecmaVersion: 7,
-    sourceType: 'module',
+  extends: ['plugin:vue/essential', 'eslint:recommended'],
+  rules: {
+    'no-unused-vars': 0,
   },
 }
