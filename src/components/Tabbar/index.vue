@@ -15,7 +15,7 @@
 import { Tabbar, TabbarItem } from 'vant'
 
 export default {
-  name: 'navbar',
+  name: 'tabbar',
   components: {
     'van-tabbar': Tabbar,
     'van-tabbar-item': TabbarItem,

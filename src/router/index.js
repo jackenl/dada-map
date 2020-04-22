@@ -12,7 +12,7 @@ import userRoutes from './modules/user'
 
 Vue.use(Router)
 
-const whiteList = ['/login'] // no redirect whiteList
+const whiteList = ['/login'] // login whiteList
 
 const commonRoutes = [
   { path: '/login', component: () => import('@/views/login') },
@@ -26,13 +26,17 @@ const commonRoutes = [
 ]
 
 const router = new Router({
+  mode: process.env.NODE_ENV === 'development' ? 'hash' : 'history',
   routes: commonRoutes.concat(travelRoutes, trafficRoutes, nearbyRoutes, userRoutes),
 })
 
 // router beforeEach
 router.beforeEach((to, from, next) => {
-  // set page title
+  // 设置页面标题
   document.title = getPageTitle(to.meta.title)
+
+  // 进行浏览器定位
+  store.dispatch('position/updateGeoLocation')
 
   // const hasToken = getToken()
   // if (hasToken) {
@@ -48,8 +52,6 @@ router.beforeEach((to, from, next) => {
   //     next({ path: '/login' })
   //   }
   // }
-  // 进行浏览器定位
-  store.dispatch('position/updateGeoLocation')
   next()
 })
 

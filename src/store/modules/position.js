@@ -3,16 +3,15 @@ import { geoLocation, getAddress } from '@/utils/map'
 import cities from '@/config/city.json'
 
 const state = {
-  lng: 116.397428, // 经度
-  lat: 39.90923, // 纬度
+  location: null, // 位置信息
   city: '北京市', // 城市名称
-  address: '北京市东城区东华门街道天安门', // 地址
+  address: '', // 地址
   hasGeoLocation: false // 是否已经定位
 }
 
 const getters = {
-  location: state => {
-    return [state.lng, state.lat]
+  lnglat: state => {
+    return [state.location.lng, state.location.lat]
   },
   cityText: state => {
     const index = state.city.indexOf('市')
@@ -34,9 +33,8 @@ const getters = {
 }
 
 const mutations = {
-  [SET_GEOLOCATION]: (state, position) => {
-    state.lng = position.lng
-    state.lat = position.lat
+  [SET_GEOLOCATION]: (state, location) => {
+    state.location = location
     state.hasGeoLocation = true
   },
   [SET_ADDRESS]: (state, data) => {
@@ -54,17 +52,17 @@ const actions = {
         commit(SET_GEOLOCATION, result)
         dispatch('updateAddress')
       } catch (err) {
-        console.error(err.message)
+        console.log('定位失败：', err)
       }
     }
   },
   // 获取定位地址和城市
-  async updateAddress({ commit, state }) {
+  async updateAddress({ commit, getters }) {
     try {
-      const result = await getAddress(state.lng, state.lat)
+      const result = await getAddress(getters.lnglat)
       commit(SET_ADDRESS, result)
     } catch (err) {
-      console.error(err.message)
+      console.log('地理编码转换失败：', err)
     }
   },
 }

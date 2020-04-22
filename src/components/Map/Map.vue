@@ -1,7 +1,7 @@
 <template>
   <!-- 地图组件 -->
   <div class="map">
-    <div id="container" class="container"></div>
+    <div id="container" :style="containerStyle"></div>
     <div v-if="traffic" class="toggle traffic-toggle" @click="trafficToggle">
       <van-icon class-prefix="my-icon" :name="trafficVisible ? 'traffic-on' : 'traffic-off'" size="18"></van-icon>
       <span>路况</span>
@@ -15,6 +15,7 @@
 
 <script>
 import { Icon } from 'vant'
+import { geoLocation } from '@/utils/map';
 
 export default {
   name: 'name',
@@ -22,9 +23,16 @@ export default {
     'van-icon': Icon,
   },
   props: {
+    width: {
+      type: String,
+      default: '100%'
+    },
+    height: {
+      type: String,
+      default: '100%'
+    },
     // 高德地图地图实例配置参数
     options: {
-      type: Object,
       default: () => {
         return {
           resizeEnable: true,
@@ -38,12 +46,17 @@ export default {
       type: Array,
       default: () => [],
     },
-    // 是否添加实时路况图层
+    // 实时定位
+    geolocation: {
+      type: Boolean,
+      default: () => true
+    },
+    // 实时路况图层
     traffic: {
       type: Boolean,
       default: () => false,
     },
-    // 是否显示卫星图层
+    // 卫星图层
     satellite: {
       type: Boolean,
       default: () => false,
@@ -57,6 +70,33 @@ export default {
       satelliteLayer: null, // 卫星图层
       satelliteVisible: false, // 是否显示卫星图层
       marker: null, // 位置标注
+      location: null // 定位信息
+    }
+  },
+  computed: {
+    containerStyle() {
+      const style = {}
+      if (this.width.indexOf('px') > -1 || this.width.indexOf('%')) {
+        style.width = this.width
+      } else {
+        const width = Number(this.width)
+        if (!isNaN(width)) {
+          style.width = width + 'px'
+        } else {
+          style.width = '100%'
+        }
+      }
+      if (this.height.indexOf('px') > -1 || this.height.indexOf('%')) {
+        style.height = this.height
+      } else {
+        const height = Number(this.height)
+        if (!isNaN(height)) {
+          style.height = height + 'px'
+        } else {
+          style.height = '100%'
+        }
+      }
+      return style
     }
   },
   mounted() {
@@ -69,11 +109,14 @@ export default {
       // 添加卫星图层
       this.satelliteLayer = new window.AMap.TileLayer.Satellite()
     }
+    if (this.geolocation) {
+      // 设置实时定位
+      this.setGeolocation()
+    }
   },
   methods: {
     createMap() {
       this.map = new window.AMap.Map('container', this.options)
-      this.setGeolocation()
       this.addControl()
     },
     // 添加地图控件
@@ -95,17 +138,24 @@ export default {
       })
     },
     // 地图定位
-    setGeolocation() {
+    async setGeolocation() {
       window.AMap.plugin('AMap.Geolocation', () => {
         const geolocation = new window.AMap.Geolocation({
           enableHighAccuracy: true, //是否使用高精度定位，默认:true
           timeout: 10000, //超过10秒后停止定位，默认：5s
-          buttonPosition: 'LB', //定位按钮的停靠位置
+          position: 'RB', //定位按钮的停靠位置
+          offset: [10, 70], // 定位偏移量
           zoomToAccuracy: true, //定位成功后是否自动调整地图视野到定位点
         })
         // 添加定位插件
         this.map.addControl(geolocation)
-        geolocation.getCurrentPosition()
+        geolocation.getCurrentPosition((status, result) => {
+          if (status === 'complete') {
+            this.location = result.position
+          } else {
+            console.log('定位失败：', result)
+          }
+        })
       })
     },
     // 实时路况按钮
@@ -149,10 +199,6 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
-  .container {
-    width: 100%;
-    height: 100%;
-  }
   .toggle {
     width: 72px;
     height: 72px;

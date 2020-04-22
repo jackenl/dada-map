@@ -1,10 +1,8 @@
-const Travel = () => import('@/views/travel/index')
-
 const homeRoutes = [
   {
     path: '/travel',
     name: 'travel',
-    component: Travel,
+    component: () => import('@/views/travel/index'),
     meta: {
       title: '出行',
     },
