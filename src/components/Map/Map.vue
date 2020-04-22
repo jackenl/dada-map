@@ -144,7 +144,7 @@ export default {
           enableHighAccuracy: true, //是否使用高精度定位，默认:true
           timeout: 10000, //超过10秒后停止定位，默认：5s
           position: 'RB', //定位按钮的停靠位置
-          offset: [10, 70], // 定位偏移量
+          offset: [20, 70], // 定位偏移量
           zoomToAccuracy: true, //定位成功后是否自动调整地图视野到定位点
         })
         // 添加定位插件
@@ -215,12 +215,12 @@ export default {
     cursor: pointer;
     &.satellite-toggle {
       position: absolute;
-      top: 220px;
+      top: 250px;
       right: 30px;
     }
     &.traffic-toggle {
       position: absolute;
-      top: 130px;
+      top: 150px;
       right: 30px;
     }
   }

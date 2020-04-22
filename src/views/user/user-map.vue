@@ -2,7 +2,9 @@
   <div class="user-map">
     <Map ref="map" :options="mapOptions" height="105%" :geolocation="false" />
     <van-popup class="desc-popup" :value="visible" position="bottom" :overlay="false">
-      2个点亮城市
+      <div class="content">
+        2个点亮城市
+      </div>
     </van-popup>
   </div>
 </template>
@@ -76,12 +78,16 @@ export default {
   overflow: hidden;
   .desc-popup {
     height: 20%;
-    background-color: #1f1b26;
-    color: #fff;
-    width: 680px;
-    margin: 20px 35px;
-    border-radius: 10px;
-    padding: 20px 20px 0;
+    background-color: transparent;
+    margin-bottom: 20px;
+    .content {
+      height: 100%;
+      margin: 0 30px;
+      background-color: #1f1b26;
+      color: #fff;
+      border-radius: 10px;
+      padding: 20px 20px 0;
+    }
   }
 }
 </style>

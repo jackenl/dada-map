@@ -36,7 +36,7 @@
       />
     </div>
     <div class="route-icon" @click="getNavigation">
-      <van-icon class-prefix="my-icon" size="32" color="#1989fa" name="route"></van-icon>
+      <van-icon class-prefix="my-icon" size="40" color="#1989fa" name="route"></van-icon>
     </div>
   </div>
 </template>
@@ -227,8 +227,8 @@ export default {
   }
   .route-icon {
     position: absolute;
-    bottom: 180px;
-    right: 20px;
+    bottom: 200px;
+    right: 30px;
     background-color: #fff;
     border-radius: 50%;
   }
@@ -237,7 +237,7 @@ export default {
 <style lang="less">
 .traffic {
   .van-cell {
-    line-height: 30px;
+    line-height: 36px;
   }
   .van-search__content {
     background-color: #fff;

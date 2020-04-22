@@ -74,8 +74,7 @@ export default {
     padding-top: 200px;
     overflow: auto;
     .header {
-      width: 710px;
-      margin: auto;
+      margin: 0 20px;
       border-radius: 20px;
       overflow: hidden;
       .avatar {
