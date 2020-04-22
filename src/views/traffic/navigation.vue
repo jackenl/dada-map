@@ -66,7 +66,7 @@
     >
       <div class="header" @click="adjustRouteHeight">
         <span class="text">请选择合适路线</span>
-        <van-button type="info" size="mini" :style="{ float: 'right', marginTop: '5px' }">确定</van-button>
+        <van-button type="info" size="small" :style="{ float: 'right', marginTop: '2px' }">确定</van-button>
       </div>
       <div class="content">
         <!-- 路线规划展示 -->
@@ -242,18 +242,17 @@ export default {
     width: 100%;
     background-color: #fff;
     .search-field {
-      width: 650px;
       display: flex;
       align-items: center;
-      margin: 20px auto;
+      margin: 20px 50px;
       background-color: #f5f5f5;
       border-radius: 10px;
       overflow: hidden;
       .content {
         flex: 1;
         .input-field {
-          height: 60px;
-          line-height: 60px;
+          height: 80px;
+          line-height: 80px;
           display: flex;
           align-items: center;
           &-title {
@@ -269,7 +268,6 @@ export default {
               width: 100%;
               border: none;
               background-color: inherit;
-              font-size: 15px;
               color: #333;
               &:first-child {
                 border-bottom: 1px solid #eee;
@@ -295,26 +293,27 @@ export default {
       display: flex;
       justify-content: space-around;
       align-items: center;
-      margin-bottom: 20px;
+      padding: 20px 0;
       .tool-cell {
-        height: 40px;
-        line-height: 40px;
+        height: 50px;
+        line-height: 50px;
         padding: 0 15px;
-        font-size: 13px;
+        font-size: 14px;
         color: #333;
         text-align: center;
-        border-radius: 20px;
+        border-radius: 25px;
         transition: all ease-in 0.3s;
         &.active {
           background-color: #1989fa;
           color: #fff;
+          font-weight: 500;
         }
       }
     }
   }
   .popup {
     &.tips-popup {
-      height: 80%;
+      height: 75%;
     }
     &.route-popup {
       height: 50%;
@@ -324,9 +323,9 @@ export default {
       }
     }
     .header {
-      height: 65px;
+      height: 70px;
       padding: 0 20px;
-      line-height: 65px;
+      line-height: 70px;
       border-bottom: 1px solid #eee;
       .text {
         font-size: 13px;
@@ -335,7 +334,7 @@ export default {
       }
     }
     .content {
-      height: calc(100% - 65px);
+      height: calc(100% - 70px);
       overflow: auto;
     }
   }
