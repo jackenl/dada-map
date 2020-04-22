@@ -1,7 +1,7 @@
 <template>
   <div class="traffic">
     <!-- 地图实例 -->
-    <Map ref="map" :plugins="['AMap.Scale']" traffic satellite></Map>
+    <Map ref="map" :plugins="['AMap.Scale']" height="104%" traffic satellite></Map>
     <!-- 提示抽屉 -->
     <van-popup class="tips-popup" v-model="tipsVisible" position="bottom" :overlay="false">
       <div class="header" @click="onClose">
@@ -16,7 +16,7 @@
                 <span v-for="(tag, index) in tip.tags" :key="index" :class="tagClass(tag)">{{ tag }}</span>
               </div>
             </template>
-            <div v-if="tip.adcode" class="right-icon" slot="right-icon" @click.stop="getRoute(tip)">
+            <div v-if="tip.adcode" class="right-icon" slot="right-icon" @click.stop="getRoutes(tip)">
               <van-icon class-prefix="my-icon" name="route" size="20" color="#666" />
               <span>路线</span>
             </div>
@@ -32,9 +32,11 @@
         v-model="searchValue"
         placeholder="查找地点"
         background="transparent"
-        @focus="onFocus"
         @input="autoInput"
       />
+    </div>
+    <div class="route-icon" @click="getNavigation">
+      <van-icon class-prefix="my-icon" size="32" color="#1989fa" name="route"></van-icon>
     </div>
   </div>
 </template>
@@ -44,7 +46,7 @@ import { Search, Popup, CellGroup, Cell, Icon } from 'vant'
 import Map from '@/components/Map/Map'
 import LocationDetail from './components/location-detail'
 import { mapState } from 'vuex'
-import { districtSearch } from '@/utils/map'
+import { districtSearch, autoComplete } from '@/utils/map'
 
 export default {
   name: 'traffic',
@@ -83,36 +85,34 @@ export default {
       this.tipsVisible = false
     },
     // 获取输入提示数据
-    autoInput() {
-      window.AMap.plugin('AMap.AutoComplete', () => {
-        // 实例化Autocomplete
-        const autoOptions = {
-          city: this.city,
-        }
-        const autoComplete = new window.AMap.Autocomplete(autoOptions)
-        autoComplete.search(this.searchValue, (status, result) => {
-          // 搜索成功时，result即是对应的匹配数据
-          if (status === 'complete' && result.info === 'OK') {
-            this.tips = result.tips
-            this.tips.forEach((tip) => {
-              // 如果是公交地铁站则变换address
-              if (this.isStation(tip.name)) {
-                tip.tags = tip.address.split(';').slice(0, 3)
-              }
-              // 如果为城市，则获取城市中心点
-              if (tip.adcode && !tip.location) {
-                const opts = {
-                  level: 'city',
-                  subdistrict: 0,
-                }
-                districtSearch(opts, tip.name).then((res) => {
-                  tip.location = res.center
-                })
-              }
-            })
+    async autoInput() {
+      if (this.searchValue) {
+        try {
+          const opts = {
+            city: this.city,
           }
-        })
-      })
+          this.tips = await autoComplete(opts, this.searchValue)
+          this.tips.forEach((tip) => {
+            // 如果是公交地铁站则变换address
+            if (this.isStation(tip.name)) {
+              tip.tags = tip.address.split(';').slice(0, 3)
+            }
+            // 如果为城市，则获取城市中心点
+            if (tip.adcode && !tip.location) {
+              const opts = {
+                level: 'city',
+                subdistrict: 0,
+              }
+              districtSearch(opts, tip.name).then((res) => {
+                tip.location = res.center
+              })
+            }
+          })
+          this.tipsVisible = true
+        } catch (err) {
+          console.log('获取提示信息失败：', err)
+        }
+      }
     },
     getAddress(tip) {
       if (Array.isArray(tip.address) && tip.address.length === 0) {
@@ -143,12 +143,25 @@ export default {
         this.searchValue = tip.name
         this.markPosition = tip
         this.$refs.map.setMarker(tip.location)
+      } else {
+        this.searchValue = tip.name
+        this.autoInput()
       }
     },
     // 查看导航路线
-    getRoute(tip) {
-      console.log('route')
+    getRoutes(tip) {
+      const lnglat = [tip.location.lng, tip.location.lat]
+      this.$router.push({
+        path: '/navigation',
+        query: {
+          keywords: tip.name,
+          loc: lnglat.toString()
+        }
+      })
     },
+    getNavigation() {
+      this.$router.push('/navigation')
+    }
   },
 }
 </script>
@@ -158,6 +171,7 @@ export default {
   position: relative;
   height: calc(100% - 100px);
   margin-bottom: 100px;
+  overflow: hidden;
   .container {
     width: 100%;
     height: 100%;
@@ -210,6 +224,13 @@ export default {
         }
       }
     }
+  }
+  .route-icon {
+    position: absolute;
+    bottom: 180px;
+    right: 20px;
+    background-color: #fff;
+    border-radius: 50%;
   }
 }
 </style>

@@ -6,17 +6,15 @@ const trafficRoutes = [
     meta: {
       title: '导航',
     },
-    children: [
-      {
-        path: 'navigation',
-        name: 'navigation',
-        component: () => import('@/views/traffic/navigation'),
-        meta: {
-          title: '路线规划'
-        }
-      }
-    ]
   },
+  {
+    path: '/navigation',
+    name: 'navigation',
+    component: () => import('@/views/traffic/navigation'),
+    meta: {
+      title: '路线规划'
+    }
+  }
 ]
 
 export default trafficRoutes

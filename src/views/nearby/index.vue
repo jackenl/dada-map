@@ -37,11 +37,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('position', ['cityText', 'location', 'cityCode']),
+    ...mapGetters('position', ['cityText', 'lnglat', 'cityCode']),
   },
   methods: {
     onSearch() {
-      const path = `https://uri.amap.com/search?keyword=${this.searchValue}&center=${this.location}&city=${this.cityCode}&view=list&src=mypage&coordinate=gaode&callnative=0`
+      const path = `https://uri.amap.com/search?keyword=${this.searchValue}&center=${this.lnglat}&city=${this.cityCode}&view=list&src=mypage&coordinate=gaode&callnative=0`
       window.location.href = path;
     },
   },

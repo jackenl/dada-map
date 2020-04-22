@@ -44,16 +44,16 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('position', ['location', 'cityCode'])
+    ...mapGetters('position', ['lnglat', 'cityCode'])
   },
   methods: {
     getRecommend(keyword) {
       let path = ''
       if (keyword === '更多') {
         const currentPage = encodeURIComponent(window.location.href)
-        path = `https://m.amap.com/searchmore/index/type=nearby&wm_referrer=${currentPage}&user_loc=${this.location.toString()}`
+        path = `https://m.amap.com/searchmore/index/type=nearby&wm_referrer=${currentPage}&user_loc=${this.lnglat}`
       } else {
-        path = `https://uri.amap.com/nearby?service=${keyword}&location=${this.location.toString()}&city=${this.cityCode}&src=mypage&coordinate=gaode`
+        path = `https://uri.amap.com/nearby?service=${keyword}&location=${this.lnglat}&city=${this.cityCode}&src=mypage&coordinate=gaode`
       }
       window.location.href = path
     }

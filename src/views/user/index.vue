@@ -3,7 +3,7 @@
     <div class="container">
       <!-- 头部信息 -->
       <header class="header">
-        <van-cell title-class="cell-title" value-class="cell-value" to="/user/userInfo" center is-link>
+        <van-cell title-class="cell-title" value-class="cell-value" to="/userInfo" center is-link>
           <div class="avatar" slot="title">
             <van-icon class-prefix="my-icon" name="user" size="40" color="#999"></van-icon>
             <!-- <img src=""> -->
@@ -21,12 +21,12 @@
       </header>
       <!-- 出行数据统计 -->
       <div class="travel-cell-group">
-        <van-cell class="travel-cell city" is-link>
+        <van-cell class="travel-cell city" to="/userMap" is-link>
           <p slot="title">点亮城市</p>
           <p slot="label">2个</p>
         </van-cell>
         <van-cell class="travel-cell mileage" is-link>
-          <p slot="title">出行里程</p>
+          <p slot="title">行程记录</p>
           <p slot="label">0公里</p>
         </van-cell>
       </div>

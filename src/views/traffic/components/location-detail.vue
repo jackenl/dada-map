@@ -53,13 +53,13 @@ export default {
     'van-icon': Icon,
   },
   computed: {
-    ...mapGetters('position', ['location']),
+    ...mapGetters('position', ['lnglat']),
     distance() {
       const markLocation = this.markPosition.location
       let distance = 0
       if (markLocation) {
         const p1 = [markLocation.lng, markLocation.lat]
-        const p2 = this.location
+        const p2 = this.lnglat
         distance = window.AMap.GeometryUtil.distance(p1, p2)
       }
       return (distance / 1000).toFixed(1)
@@ -74,7 +74,14 @@ export default {
       }
     },
     getRoutes() {
-      console.log('route')
+      const lnglat = [this.markPosition.location.lng, this.markPosition.location.lat]
+      this.$router.push({
+        path: '/navigation',
+        query: {
+          keywords: this.markPosition.name,
+          loc: lnglat.toString()
+        }
+      })
     }
   },
 }
