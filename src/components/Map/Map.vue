@@ -42,14 +42,14 @@ export default {
       },
     },
     // 地图控件
-    plugins: {
+    controller: {
       type: Array,
       default: () => [],
     },
     // 实时定位
     geolocation: {
-      type: Boolean,
-      default: () => true
+      type: String,
+      default: () => 'normal', // normal(默认)：显示按钮 default：不显示按钮 none：不进行定位
     },
     // 实时路况图层
     traffic: {
@@ -101,28 +101,28 @@ export default {
   },
   mounted() {
     this.createMap()
-    if (this.traffic) {
-      // 添加实时路况图层
-      this.trafficLayer = new window.AMap.TileLayer.Traffic()
-    }
-    if (this.satellite) {
-      // 添加卫星图层
-      this.satelliteLayer = new window.AMap.TileLayer.Satellite()
-    }
-    if (this.geolocation) {
-      // 设置实时定位
-      this.setGeolocation()
-    }
   },
   methods: {
     createMap() {
       this.map = new window.AMap.Map('container', this.options)
       this.addControl()
+      if (this.traffic) {
+      // 添加实时路况图层
+        this.trafficLayer = new window.AMap.TileLayer.Traffic()
+      }
+      if (this.satellite) {
+        // 添加卫星图层
+        this.satelliteLayer = new window.AMap.TileLayer.Satellite()
+      }
+      if (this.geolocation !== 'none') {
+        // 设置实时定位
+        this.setGeolocation()
+      }
     },
     // 添加地图控件
     addControl() {
-      window.AMap.plugin(this.plugins, () => {
-        if (this.plugins.indexOf('AMap.ToolBar') > -1) {
+      window.AMap.plugin(this.controller, () => {
+        if (this.controller.indexOf('AMap.ToolBar') > -1) {
           this.map.addControl(
             new window.AMap.ToolBar({
               position: {
@@ -132,7 +132,7 @@ export default {
             })
           )
         }
-        if (this.plugins.indexOf('AMap.Scale') > -1) {
+        if (this.controller.indexOf('AMap.Scale') > -1) {
           this.map.addControl(new window.AMap.Scale())
         }
       })
@@ -140,14 +140,18 @@ export default {
     // 地图定位
     async setGeolocation() {
       window.AMap.plugin('AMap.Geolocation', () => {
-        const geolocation = new window.AMap.Geolocation({
+        const opts = {
           enableHighAccuracy: true, //是否使用高精度定位，默认:true
           timeout: 10000, //超过10秒后停止定位，默认：5s
           position: 'RB', //定位按钮的停靠位置
           offset: [20, 70], // 定位偏移量
           zoomToAccuracy: true, //定位成功后是否自动调整地图视野到定位点
-        })
-        // 添加定位插件
+        }
+        if (this.geolocation === 'default') {
+          opts.showButton = false
+        }
+        const geolocation = new window.AMap.Geolocation(opts)
+        // 添加定位控件
         this.map.addControl(geolocation)
         geolocation.getCurrentPosition((status, result) => {
           if (status === 'complete') {

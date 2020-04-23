@@ -5,7 +5,7 @@ import getPageTitle from '@/utils/get-page-title';
 import { getToken } from '@/utils/auth';
 
 // routes module import
-import travelRoutes from './modules/travel'
+import sportRoutes from './modules/sport'
 import trafficRoutes from './modules/traffic'
 import nearbyRoutes from './modules/nearby'
 import userRoutes from './modules/user'
@@ -19,15 +19,15 @@ const commonRoutes = [
   { path: '/404', component: () => import('@/views/error/404') },
   {
     path: '/',
-    component: () => import('@/views/travel/index'),
-    redirect: '/travel',
+    component: () => import('@/views/sport/index'),
+    redirect: '/sport',
   },
   { path: '*', redirect: '/404' },
 ]
 
 const router = new Router({
   mode: process.env.NODE_ENV === 'development' ? 'hash' : 'history',
-  routes: commonRoutes.concat(travelRoutes, trafficRoutes, nearbyRoutes, userRoutes),
+  routes: commonRoutes.concat(sportRoutes, trafficRoutes, nearbyRoutes, userRoutes),
 })
 
 // router beforeEach
