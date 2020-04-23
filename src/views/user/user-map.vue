@@ -1,6 +1,6 @@
 <template>
   <div class="user-map">
-    <Map ref="map" :options="mapOptions" height="105%" :geolocation="false" />
+    <Map ref="map" :options="mapOptions" height="105%" geolocation="none" />
     <van-popup class="desc-popup" :value="visible" position="bottom" :overlay="false">
       <div class="content">
         2个点亮城市
@@ -11,7 +11,7 @@
 
 <script>
 import { Popup } from 'vant'
-import Map from '@/components/Map/Map'
+import Map from '@/components/Map'
 import { districtSearch } from '@/utils/map'
 
 export default {

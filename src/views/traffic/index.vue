@@ -1,7 +1,7 @@
 <template>
   <div class="traffic">
     <!-- 地图实例 -->
-    <Map ref="map" :plugins="['AMap.Scale']" height="104%" traffic satellite></Map>
+    <Map ref="map" :controller="['AMap.Scale']" height="104%" traffic satellite></Map>
     <!-- 提示抽屉 -->
     <van-popup class="tips-popup" v-model="tipsVisible" position="bottom" :overlay="false">
       <div class="header" @click="onClose">
@@ -43,7 +43,7 @@
 
 <script>
 import { Search, Popup, CellGroup, Cell, Icon } from 'vant'
-import Map from '@/components/Map/Map'
+import Map from '@/components/Map'
 import LocationDetail from './components/location-detail'
 import { mapState } from 'vuex'
 import { districtSearch, autoComplete } from '@/utils/map'
@@ -229,6 +229,9 @@ export default {
     position: absolute;
     bottom: 200px;
     right: 30px;
+    width: 80px;
+    height: 80px;
+    line-height: 1;
     background-color: #fff;
     border-radius: 50%;
   }

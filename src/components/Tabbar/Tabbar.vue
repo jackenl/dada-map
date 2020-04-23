@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       routes: [
-        { label: '出行', path: '/travel', icon: 'wap-home-o' },
+        { label: '运动', path: '/sport', icon: 'wap-home-o' },
         { label: '导航', path: '/traffic', icon: 'navigation' },
         { label: '附近', path: '/nearby', icon: 'location-o' },
         { label: '我的', path: '/user', icon: 'contact' },
@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     active() {
-      const routes = ['travel', 'traffic', 'nearby', 'user']
+      const routes = ['sport', 'traffic', 'nearby', 'user']
       return routes.indexOf(this.$route.name)
     },
     visible() {

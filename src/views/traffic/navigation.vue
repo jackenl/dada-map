@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import Map from '@/components/Map/Map'
+import Map from '@/components/Map'
 import { Popup, Icon, CellGroup, Cell, Button } from 'vant'
 import { placeSearch, requestRoute } from '@/utils/map'
 import { mapState, mapGetters } from 'vuex'

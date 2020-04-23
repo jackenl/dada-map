@@ -40,6 +40,7 @@ export default {
 .user-info {
   position: relative;
   height: 100%;
+  background-color: #fff;
   .container {
     height: 100%;
     padding-top: 200px;
