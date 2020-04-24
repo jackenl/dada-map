@@ -12,7 +12,7 @@ import userRoutes from './modules/user'
 
 Vue.use(Router)
 
-const whiteList = ['/login'] // login whiteList
+const whiteList = ['/login', '/traffic', '/navigation', '/nearby'] // login whiteList
 
 const commonRoutes = [
   { path: '/login', component: () => import('@/views/login') },
@@ -20,7 +20,7 @@ const commonRoutes = [
   {
     path: '/',
     component: () => import('@/views/sport/index'),
-    redirect: '/sport',
+    redirect: '/traffic',
   },
   { path: '*', redirect: '/404' },
 ]

@@ -49,17 +49,17 @@ export default {
     // 实时定位
     geolocation: {
       type: String,
-      default: () => 'normal', // normal(默认)：显示按钮 default：不显示按钮 none：不进行定位
+      default: 'normal', // normal(默认)：显示按钮 default：不显示按钮 none：不进行定位
     },
     // 实时路况图层
     traffic: {
       type: Boolean,
-      default: () => false,
+      default: false,
     },
     // 卫星图层
     satellite: {
       type: Boolean,
-      default: () => false,
+      default: false,
     },
   },
   data() {
@@ -69,8 +69,10 @@ export default {
       trafficVisible: false, // 是否显示实时路况
       satelliteLayer: null, // 卫星图层
       satelliteVisible: false, // 是否显示卫星图层
+      geolocationer: null, // 定位插件
       marker: null, // 位置标注
-      location: null // 定位信息
+      location: null, // 定位信息
+      polyline: null, // 折线实例
     }
   },
   computed: {
@@ -116,7 +118,7 @@ export default {
       }
       if (this.geolocation !== 'none') {
         // 设置实时定位
-        this.setGeolocation()
+        this.getGeolocation()
       }
     },
     // 添加地图控件
@@ -138,7 +140,7 @@ export default {
       })
     },
     // 地图定位
-    async setGeolocation() {
+    async getGeolocation() {
       window.AMap.plugin('AMap.Geolocation', () => {
         const opts = {
           enableHighAccuracy: true, //是否使用高精度定位，默认:true
@@ -150,14 +152,25 @@ export default {
         if (this.geolocation === 'default') {
           opts.showButton = false
         }
-        const geolocation = new window.AMap.Geolocation(opts)
+        this.geolocationer = new window.AMap.Geolocation(opts)
         // 添加定位控件
-        this.map.addControl(geolocation)
-        geolocation.getCurrentPosition((status, result) => {
+        this.map.addControl(this.geolocationer)
+        this.getCurrentPosition().then(res => {
+          this.location = res
+        }).catch(err => {
+          console.log('定位失败：', err)
+        })
+      })
+    },
+    // 获取当前位置
+    getCurrentPosition() {
+      return new Promise((resolve, reject) => {
+        this.geolocationer.getCurrentPosition((status, result) => {
+          console.log(result)
           if (status === 'complete') {
-            this.location = result.position
+            resolve(result.position)
           } else {
-            console.log('定位失败：', result)
+            reject(result)
           }
         })
       })
@@ -194,6 +207,22 @@ export default {
       this.map.add(this.marker) // 添加标记
       this.map.setCenter([lng, lat]) // 修改地图中心
     },
+    setPolyline(path) {
+      if (this.polyline) {
+        this.map.remove(this.polyline)
+      }
+      this.polyline = new window.AMap.Polyline({
+        path: path,
+        strokeColor: "#3366FF", 
+        strokeWeight: 4,
+         strokeOpacity: 1,
+        lineJoin: 'round',
+        lineCap: 'round',
+        zIndex: 10,
+      })
+      this.map.add(this.polyline)
+      this.map.setFitView([ this.polyline ])
+    }
   },
 }
 </script>
