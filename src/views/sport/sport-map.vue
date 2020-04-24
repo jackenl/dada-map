@@ -1,6 +1,6 @@
 <template>
   <div class="sport-map">
-    <Map height="103%" />
+    <Map ref="map" height="103%" />
     <van-popup class="over-lay" :class="{ active: active }" :value="overlay" :overlay="false" position="bottom">
       <div v-show="active" class="header">
         <span>{{ title }}</span>
@@ -20,7 +20,7 @@
             <div class="label">时间</div>
           </div>
           <div class="label-cell">
-            <div class="value">{{ count.calories | caloriesFormat }}</div>
+            <div class="value">{{ count.calories }}</div>
             <div class="label">千卡</div>
           </div>
         </div>
@@ -37,7 +37,8 @@
 <script>
 import { Popup, Dialog, Field } from 'vant'
 import Map from '@/components/Map'
-import { timeFormat, speedFormat } from '@/utils/format';
+import { timeFormat, speedFormat } from '@/utils/format'
+import { geoLocation } from '@/utils/map';
 
 export default {
   name: 'sport-map',
@@ -51,9 +52,6 @@ export default {
     distanceFormat(value) {
       return Math.floor(value / 1000).toFixed(2)
     },
-    caloriesFormat(value) {
-      return Math.floor(value / 10).toFixed(1)
-    }
   },
   data() {
     return {
@@ -67,7 +65,8 @@ export default {
         calories: 0,
       },
       status: 0,
-      timer: null
+      timer: null,
+      path: [], // 经过地点
     }
   },
   computed: {
@@ -82,9 +81,11 @@ export default {
   mounted() {
     this.title = this.$route.query.title || ''
     this.overlay = true
-    this.timer = setInterval(() => {
-      this.count.time++
-    }, 1000);
+    setTimeout(() => {
+      if (this.$refs.map.geolocationer) {
+        this.countUp()
+      }
+    }, 3000);
   },
   methods: {
     mapToggle() {
@@ -97,6 +98,7 @@ export default {
       } else if (this.status === 0) {
         this.status = 1
         clearInterval(this.timer)
+        this.count.speed = 0 // 清零速度
         this.timer = null
       }
     },
@@ -109,14 +111,30 @@ export default {
         this.$router.go(-1)
       }, 2000);
     },
-    // 计算时间
+    // 轮询获取实时定位并且计算相关数据
     countUp() {
-      if (this.timer) {
-        clearInterval(this.timer)
-        this.timer = null
-      }
-      this.timer = setInterval(() => {
+      this.timer = setInterval(async () => {
         this.count.time++
+        const map = this.$refs.map
+        try {
+          const location = await map.getCurrentPosition()
+          const p1 = [location.lng, location.lat]
+          const p2 = this.path[this.path.length - 1]
+          if (p2) {
+            if (JSON.stringify(p2) !== JSON.stringify(p1)) {
+              const distance = window.AMap.GeometryUtil.distance(p1, p2)
+              this.count.distance += distance
+              this.count.speed = distance
+              this.count.calories = Math.floor(distance / 10).toFixed(0)
+              this.path.push(p1)
+              map.setPolyline(this.path) // 描绘运动轨迹
+            }
+          } else {
+            this.path.push(p1)
+          }
+        } catch (err) {
+          this.$toast('定位失败')
+        }
       }, 1000);
     }
   },
