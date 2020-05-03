@@ -1,38 +1,56 @@
 <template>
   <div class="login">
     <header class="header">
-      <img class="logo" src="@/assets/img/logo.png" alt="logo">
+      <img class="logo" src="@/assets/img/logo.png" alt="logo" />
       <p class="title">哒哒出行</p>
     </header>
     <div class="login_wrapper">
       <div class="input-field">
-        <input type="text" placeholder="邮箱号/手机号">
+        <input v-model="formData.username" type="text" placeholder="邮箱号/手机号" />
       </div>
       <div class="input-field">
-        <input type="text" placeholder="密码">
+        <input v-model="formData.password" type="password" placeholder="密码" />
       </div>
       <div class="link-field">
-        <router-link to="/">注册</router-link>
-        <router-link to="/">忘记密码</router-link>
+        <router-link to="javascript;;">注册</router-link>
+        <router-link to="javascript;;">忘记密码</router-link>
       </div>
-      <van-button class="btn" type="info" block round>登陆</van-button>
+      <van-button class="btn" type="info" block round @click="handleLogin">登陆</van-button>
     </div>
   </div>
 </template>
 
 <script>
-import { Button } from 'vant';
+import { Button } from 'vant'
 
 export default {
   name: 'login',
   components: {
-    'van-button': Button
+    'van-button': Button,
   },
   data() {
-    return {}
+    return {
+      formData: {
+        username: '13160883942',
+        password: '123456',
+      }
+    }
   },
-  created() {},
-  mounted() {},
+  watch: {
+    $route: {
+      handler: function(route) {
+        this.redrect = route.query && route.query.redirect
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    handleLogin() {
+      this.$store.dispatch('user/login', this.formData).then(() => {
+        this.$router.push({ path: this.redirect })
+      })
+    }
+  }
 }
 </script>
 
@@ -50,7 +68,7 @@ export default {
     & .title {
       margin-top: 20px;
       font-size: 18px;
-      color: #565EFF;
+      color: #565eff;
       letter-spacing: 2px;
     }
   }
@@ -77,7 +95,7 @@ export default {
       display: flex;
       justify-content: space-between;
       height: 80px;
-      line-height:80px;
+      line-height: 80px;
       & > a {
         padding: 0 20px;
         font-size: 14px;

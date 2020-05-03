@@ -3,7 +3,10 @@ import { geoLocation, getAddress } from '@/utils/map'
 import cities from '@/config/city.json'
 
 const state = {
-  location: null, // 位置信息
+  location: {
+    lng: 116.397428,
+    lat: 39.90923
+  }, // 位置信息
   city: '北京市', // 城市名称
   address: '', // 地址
   hasGeoLocation: false // 是否已经定位

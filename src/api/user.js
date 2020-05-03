@@ -1,31 +1,29 @@
-import request from '@/utils/request'
+import service from '@/utils/request'
+
+const request = (data) => {
+  data.url = '/users' + data.url
+  return service(data)
+}
 
 export function login(data) {
   return request({
-    url: '/map/user/login',
+    url: '/login',
     method: 'post',
     data
   })
 }
 
-export function getUserInfo(token) {
+export function getUserInfo() {
   return request({
-    url: '/map/user/info',
+    url: '/userInfo',
     method: 'get',
-    params: { token }
   })
 }
 
-export function logout() {
+export function register(data) {
   return request({
-    url: '/map/user/logout',
-    method: 'post'
-  })
-}
-
-export function register() {
-  return request({
-    url: '/map/user/register',
-    method: 'put'
+    url: '/register',
+    method: 'post',
+    data
   })
 }

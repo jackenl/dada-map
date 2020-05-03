@@ -3,7 +3,7 @@
     <Map ref="map" :options="mapOptions" height="105%" geolocation="none" />
     <van-popup class="desc-popup" :value="visible" position="bottom" :overlay="false">
       <div class="content">
-        2个点亮城市
+        {{cities.length}}个点亮城市
       </div>
     </van-popup>
   </div>
@@ -13,6 +13,7 @@
 import { Popup } from 'vant'
 import Map from '@/components/Map'
 import { districtSearch } from '@/utils/map'
+import { getTravelData } from '@/api/travel'
 
 export default {
   name: 'user-map',
@@ -30,14 +31,18 @@ export default {
       cities: ['深圳', '广州'], // 点亮城市列表
       overtake: '27%',
       polygons: [],
-      visible: false
+      visible: true
     }
   },
-  mounted() {
-    this.visible = true
+  async mounted() {
+    await this.getCities()
     this.drawBounds()
   },
   methods: {
+    async getCities() {
+      const result = await getTravelData()
+      this.cities = result ? result.cities : []
+    },
     async drawBounds() {
       const opts = {
         subdistrict: 0, //获取边界不需要返回下级行政区

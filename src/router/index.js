@@ -26,32 +26,42 @@ const commonRoutes = [
 ]
 
 const router = new Router({
-  mode: process.env.NODE_ENV === 'development' ? 'hash' : 'history',
+  // mode: process.env.NODE_ENV === 'development' ? 'hash' : 'history',
   routes: commonRoutes.concat(sportRoutes, trafficRoutes, nearbyRoutes, userRoutes),
 })
 
 // router beforeEach
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   // 设置页面标题
   document.title = getPageTitle(to.meta.title)
 
   // 进行浏览器定位
   store.dispatch('position/updateGeoLocation')
 
-  // const hasToken = getToken()
-  // if (hasToken) {
-  //   if (to.path === '/login') {
-  //     next({ path: '/' })
-  //   } else {
-  //     next()
-  //   }
-  // } else {
-  //   if (whiteList.indexOf(to.path) !== -1) {
-  //     next()
-  //   } else {
-  //     next({ path: '/login' })
-  //   }
-  // }
+  const hasToken = getToken()
+  if (hasToken) {
+    if (to.path === '/login') {
+      next({ path: '/' })
+    } else {
+      const hasGetUserInfo = store.getters.hasGetUserInfo
+      if (hasGetUserInfo) {
+        next()
+      } else {
+        try {
+          await store.dispatch('user/getInfo')
+          next()
+        } catch (error) {
+          next(`/login?redirect=${to.path}`)
+        }
+      }
+    }
+  } else {
+    if (whiteList.indexOf(to.path) !== -1) {
+      next()
+    } else {
+      next(`/login?redirect=${to.path}`)
+    }
+  }
   next()
 })
 
