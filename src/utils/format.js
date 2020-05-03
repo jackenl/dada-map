@@ -40,7 +40,7 @@ export function timeFormat(second) {
 export function speedFormat(value) {
   let result = ''
   const value1 = Math.floor(value / 60).toString()
-  const value2 = value % 60
+  const value2 = (value % 60).toString()
   if (value1.length < 2) {
     result = '0' + value1 + '\''
   } else {

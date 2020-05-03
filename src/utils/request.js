@@ -20,7 +20,7 @@ service.interceptors.request.use(
   config => {
     const token = getToken()
     if (token) {
-      config.headers['X-Token'] = token
+      config.headers['x-token'] = token
     }
     return config
   },
@@ -33,6 +33,7 @@ service.interceptors.request.use(
 // response interceptor
 service.interceptors.response.use(
   response => {
+    Toast.clear()
     const res = response.data
 
     if (res.code + '' !== '200') {
@@ -52,11 +53,12 @@ service.interceptors.response.use(
       }
       return Promise.reject(new Error(res.msg || 'Error'))
     } else {
-      return Promise.resolve(res.data);
+      return res.data;
     }
   },
   error => {
     console.log(error) // for debug
+    Toast.clear()
     Toast({
       message: error.message,
       duration: 2000
@@ -65,4 +67,15 @@ service.interceptors.response.use(
   }
 )
 
-export default service
+const request = (options, loading = true) => {
+  if (loading) {
+    Toast.loading({
+      message: '加载中...',
+      forbidClick: true,
+      duration: 0
+    })
+  }
+  return service(options)
+}
+
+export default request

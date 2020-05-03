@@ -5,11 +5,11 @@
       <header class="header">
         <van-cell title-class="cell-title" value-class="cell-value" to="/userInfo" center is-link>
           <div class="avatar" slot="title">
-            <van-icon class-prefix="my-icon" name="user" size="40" color="#999"></van-icon>
-            <!-- <img src=""> -->
+            <van-icon v-if="!userInfo.avatar" class-prefix="my-icon" name="user" size="40" color="#999"></van-icon>
+            <img v-else src="" />
           </div>
           <div class="cell-right" slot="default">
-            <p class="cell-right-title">jacken</p>
+            <p class="cell-right-title">{{ userInfo.nickname }}</p>
             <div class="tag-list">
               <span class="tag-cell grade">Lv.5</span>
               <span class="tag-cell badge">2个徽章</span>
@@ -23,11 +23,11 @@
       <div class="travel-cell-group">
         <van-cell class="travel-cell city" to="/userMap" is-link>
           <p slot="title">点亮城市</p>
-          <p slot="label">2个</p>
+          <p slot="label">{{ cities }}个</p>
         </van-cell>
         <van-cell class="travel-cell mileage" is-link>
           <p slot="title">行程记录</p>
-          <p slot="label">0公里</p>
+          <p slot="label">{{ distance }}公里</p>
         </van-cell>
       </div>
     </div>
@@ -37,6 +37,8 @@
 <script>
 import { Cell, CellGroup, Icon } from 'vant'
 import DescList from './components/desc-list'
+import { mapState } from 'vuex'
+import { getTravelData } from '@/api/travel'
 
 export default {
   name: 'user',
@@ -47,12 +49,21 @@ export default {
   },
   data() {
     return {
-      userInfo: {}, // 用户信息
-      travelData: {}, // 出行数据
+      travelData: '', // 出行数据
     }
   },
-  created() {},
-  mounted() {},
+  computed: {
+    ...mapState('user', ['userInfo']),
+    cities() {
+      return this.travelData ? this.travelData.cities.length : 0
+    },
+    distance() {
+      return this.travelData ? this.travelData.all : 0
+    },
+  },
+  async created() {
+    this.travelData = await getTravelData()
+  },
 }
 </script>
 
@@ -86,6 +97,10 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+        & > img {
+          width: 100%;
+          height: 100%;
+        }
       }
       .cell-right {
         color: #333;
