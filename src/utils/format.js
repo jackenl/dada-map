@@ -53,3 +53,7 @@ export function speedFormat(value) {
   }
   return result
 }
+
+export function kilometerFormat(value) {
+  return (value / 1000).toFixed(1)
+}

@@ -40,3 +40,11 @@ export function insertTravelRecord(data) {
     data,
   })
 }
+
+export function insertCity(data) {
+  return request({
+    url: '/insertCity',
+    method: 'post',
+    data
+  })
+}

@@ -23,11 +23,11 @@
       <div class="travel-cell-group">
         <van-cell class="travel-cell city" to="/userMap" is-link>
           <p slot="title">点亮城市</p>
-          <p slot="label">{{ cities }}个</p>
+          <p slot="label">{{ cities.length }}个</p>
         </van-cell>
         <van-cell class="travel-cell mileage" is-link>
           <p slot="title">行程记录</p>
-          <p slot="label">{{ distance }}公里</p>
+          <p slot="label">{{ distance | kilometerFormat }}公里</p>
         </van-cell>
       </div>
     </div>
@@ -39,6 +39,7 @@ import { Cell, CellGroup, Icon } from 'vant'
 import DescList from './components/desc-list'
 import { mapState } from 'vuex'
 import { getTravelData } from '@/api/travel'
+import { kilometerFormat } from '@/utils/format'
 
 export default {
   name: 'user',
@@ -46,6 +47,9 @@ export default {
     'van-cell': Cell,
     'van-icon': Icon,
     DescList,
+  },
+  filters: {
+    kilometerFormat
   },
   data() {
     return {
@@ -55,7 +59,7 @@ export default {
   computed: {
     ...mapState('user', ['userInfo']),
     cities() {
-      return this.travelData ? this.travelData.cities.length : 0
+      return this.travelData ? this.travelData.cities : []
     },
     distance() {
       return this.travelData ? this.travelData.all : 0

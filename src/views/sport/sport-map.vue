@@ -124,7 +124,7 @@ export default {
             if (JSON.stringify(p2) !== JSON.stringify(p1)) {
               const distance = window.AMap.GeometryUtil.distance(p1, p2)
               this.count.distance += distance
-              this.count.speed = distance
+              // this.count.speed = distance
               this.count.calories = Math.floor(distance / 10).toFixed(0)
               this.path.push(p1)
               map.setPolyline(this.path) // 描绘运动轨迹

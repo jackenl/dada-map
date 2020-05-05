@@ -171,7 +171,11 @@ export function requestRoute(plugin ,options, origin, destination) {
       route.search(origin, destination, (status, result) => {
         console.log(result)
         if (status === 'complete') {
-          resolve(route)
+          const routes = plugin === 'AMap.Transfer' ? result.plans : result.routes
+          resolve({
+            plugin: route,
+            routes: routes
+          })
         } else {
           reject(result)
         }
