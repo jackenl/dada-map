@@ -3,7 +3,7 @@
     <div class="page-bg"></div>
     <header class="header">
       <div class="header-top">
-        <div class="header-top-text">00.0</div>
+        <div class="header-top-text">{{ distance | distanceFilter }}</div>
         <div class="header-top-label">累计{{ tabs[activeTab].title }}总公里</div>
       </div>
       <van-tabs
@@ -14,6 +14,7 @@
         title-active-color="#fff"
         line-width="30px"
         line-height="2px"
+        @change="onChange"
       >
         <van-tab v-for="(tab, index) in tabs" :title="tab.title" :key="index" />
       </van-tabs>
@@ -32,6 +33,7 @@
 <script>
 import { Tab, Tabs } from 'vant'
 import Map from '@/components/Map'
+import { getSportData } from '@/api/sport'
 
 export default {
   name: 'sport',
@@ -39,6 +41,12 @@ export default {
     'van-tabs': Tabs,
     'van-tab': Tab,
     Map
+  },
+  filters: {
+    distanceFilter(value) {
+      if (!value) value = 0
+      return value.toFixed(1)
+    }
   },
   data() {
     return {
@@ -48,9 +56,22 @@ export default {
         { title: '跑步', name: 'running' },
         { title: '骑行', name: 'riding' },
       ],
+      sportType: 'running',
+      sportData: {}
     }
   },
+  computed: {
+    distance() {
+      return this.sportData[this.sportType]
+    }
+  },
+  created() {
+    this.getSportData()
+  },
   methods: {
+    onChange(index) {
+      this.sportType = this.tabs[index].name
+    },
     handleBegin() {
       const title = this.tabs[this.activeTab].title
       this.$router.push({
@@ -59,7 +80,11 @@ export default {
           title: title
         }
       })
-    }
+    },
+    async getSportData() {
+      const result = await getSportData()
+      this.sportData = result
+    },
   }
 }
 </script>

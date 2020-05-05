@@ -4,6 +4,7 @@
     <van-popup class="desc-popup" :value="visible" position="bottom" :overlay="false">
       <div class="content">
         {{cities.length}}个点亮城市
+        <p>再接再厉哦</p>
       </div>
     </van-popup>
   </div>
@@ -28,20 +29,21 @@ export default {
         zoom: 2, //地图显示的缩放级别
         mapStyle: 'amap://styles/grey', // 地图样式
       },
-      cities: ['深圳', '广州'], // 点亮城市列表
+      cities: [], // 点亮城市列表
       overtake: '27%',
       polygons: [],
-      visible: true
+      visible: false
     }
   },
-  async mounted() {
-    await this.getCities()
+  mounted() {
+    this.visible = true
+    this.getCities()
     this.drawBounds()
   },
   methods: {
     async getCities() {
       const result = await getTravelData()
-      this.cities = result ? result.cities : []
+      this.cities = result.cities
     },
     async drawBounds() {
       const opts = {

@@ -1,6 +1,7 @@
 import { SET_GEOLOCATION, SET_ADDRESS } from '../mutationTypes'
 import { geoLocation, getAddress } from '@/utils/map'
 import cities from '@/config/city.json'
+import { insertCity } from '@/api/travel'
 
 const state = {
   location: {
@@ -63,6 +64,7 @@ const actions = {
   async updateAddress({ commit, getters }) {
     try {
       const result = await getAddress(getters.lnglat)
+      await insertCity({ city: result.city }) // 记录城市
       commit(SET_ADDRESS, result)
     } catch (err) {
       console.log('地理编码转换失败：', err)

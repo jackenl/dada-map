@@ -5,7 +5,7 @@
     <!-- 提示抽屉 -->
     <van-popup class="tips-popup" v-model="tipsVisible" position="bottom" :overlay="false">
       <div class="header" @click="onClose">
-        <svg-icon icon-class="user" />
+        <van-icon name="arrow-down" size="20" color="#333" />
       </div>
       <div class="content">
         <van-cell-group>
@@ -32,6 +32,7 @@
         v-model="searchValue"
         placeholder="查找地点"
         background="transparent"
+        @focus="onFocus"
         @input="autoInput"
       />
     </div>
@@ -108,7 +109,6 @@ export default {
               })
             }
           })
-          this.tipsVisible = true
         } catch (err) {
           console.log('获取提示信息失败：', err)
         }
@@ -182,10 +182,10 @@ export default {
     left: 0;
     right: 0;
     width: 100%;
-    margin-top: 10px;
+    z-index: 999999;
   }
   .tips-popup {
-    height: 90%;
+    height: calc(100% - 128px);
     border-radius: 20px 20px 0 0;
     overflow: hidden;
     .header {
@@ -240,7 +240,7 @@ export default {
 <style lang="less">
 .traffic {
   .van-cell {
-    line-height: 36px;
+    line-height: 34px;
   }
   .van-search__content {
     background-color: #fff;

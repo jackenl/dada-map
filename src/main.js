@@ -9,8 +9,9 @@ import './assets/style/iconfont.less' // iconfont
 
 import '@/icons' // icon
 
-import { Toast } from 'vant'
+import { Toast, Dialog } from 'vant'
 Vue.use(Toast)
+Vue.use(Dialog)
 
 Vue.config.productionTip = false
 

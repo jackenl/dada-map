@@ -63,7 +63,7 @@ service.interceptors.response.use(
       message: error.message,
       duration: 2000
     })
-    return Promise.resolve(error)
+    return Promise.reject(error)
   }
 )
 

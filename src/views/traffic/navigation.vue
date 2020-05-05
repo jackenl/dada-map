@@ -11,7 +11,13 @@
               <span class="input-field-title-text">从</span>
             </div>
             <div class="input-field-main">
-              <input :title="startPosition.name" v-model="startPosition.name" @input="autoInput(0)" type="text" />
+              <input
+                :title="startPosition.name"
+                v-model="startPosition.name"
+                @input="autoInput(0)"
+                @focus="onFocus"
+                type="text"
+              />
             </div>
           </div>
           <div class="input-field">
@@ -19,7 +25,13 @@
               <span class="input-field-title-text">到</span>
             </div>
             <div class="input-field-main">
-              <input :title="endPosition.name" v-model="endPosition.name" @input="autoInput(1)" type="text" />
+              <input
+                :title="endPosition.name"
+                v-model="endPosition.name"
+                @input="autoInput(1)"
+                @focus="onFocus"
+                type="text"
+              />
             </div>
           </div>
         </div>
@@ -43,7 +55,9 @@
     </div>
     <!-- 搜索提示抽屉 -->
     <van-popup class="popup tips-popup" v-model="tipsVisible" position="bottom" :overlay="false">
-      <div class="header" @click="tipsVisible = false"></div>
+      <div class="header" @click="tipsVisible = false">
+        <van-icon name="arrow-down" size="20" color="#333" />
+      </div>
       <div class="content">
         <van-cell-group>
           <van-cell
@@ -66,7 +80,7 @@
     >
       <div class="header" @click="adjustRouteHeight">
         <span class="text">请选择合适路线</span>
-        <van-button type="info" size="small" :style="{ float: 'right', marginTop: '2px' }">确定</van-button>
+        <van-button type="info" size="small" :style="{ float: 'right' }" @click="handleSave">确定</van-button>
       </div>
       <div class="content">
         <!-- 路线规划展示 -->
@@ -81,6 +95,7 @@ import Map from '@/components/Map'
 import { Popup, Icon, CellGroup, Cell, Button } from 'vant'
 import { placeSearch, requestRoute } from '@/utils/map'
 import { mapState, mapGetters } from 'vuex'
+import { insertTravelRecord } from '@/api/travel'
 
 export default {
   name: 'navigation',
@@ -109,16 +124,33 @@ export default {
       inputType: 0, // 当前数据框 0：起点 1：终点
       poiList: '', // 位置搜索列表
       trafficTools: [
-        { label: '公交地铁', value: 'Transfer', icon: 'transfer' },
-        { label: '驾车', value: 'Driving', icon: 'drive' },
-        { label: '骑行', value: 'Riding', icon: 'ride' },
-        { label: '步行', value: 'Walking', icon: 'walk' },
+        {
+          label: '公交地铁',
+          value: 'Transfer',
+          icon: 'transfer',
+        },
+        {
+          label: '驾车',
+          value: 'Driving',
+          icon: 'drive',
+        },
+        {
+          label: '骑行',
+          value: 'Riding',
+          icon: 'ride',
+        },
+        {
+          label: '步行',
+          value: 'Walking',
+          icon: 'walk',
+        },
       ],
       selectTool: 'Transfer', // 所选交通工具
       tipsVisible: false, // 是否显示搜索提示
       routeVisible: false,
       routeDown: false,
-      route: null, // 交通路线规划实例
+      Polyline: null, // 交通路线规划实例
+      routes: [],
     }
   },
   computed: {
@@ -145,11 +177,13 @@ export default {
             pageSize: 6,
           }
           this.poiList = await placeSearch(opts, keywords)
-          this.tipsVisible = true
         } catch (err) {
           console.log('获取提示信息失败：', err)
         }
       }
+    },
+    onFocus() {
+      this.tipsVisible = true
     },
     onExchange() {
       const position = this.startPosition
@@ -189,22 +223,18 @@ export default {
             autoFitView: true,
           }
           const plugin = `AMap.${this.selectTool}`
-          let origion = {}
           if (this.startPosition.name === '我的位置') {
-            origion = this.location
-          } else {
-            origion = this.startPosition.location
+            this.$set(this.startPosition, 'location', this.location)
           }
-          let distination = {}
           if (this.endPosition.name === '我的位置') {
-            distination = this.location
-          } else {
-            distination = this.endPosition.location
+            this.$set(this.endPosition, 'location', this.location)
           }
-          if (this.route) {
-            this.route.clear() // 清除路线规划实例
+          if (this.Polyline) {
+            this.Polyline.clear() // 清除路线规划实例
           }
-          this.route = await requestRoute(plugin, opts, origion, distination)
+          const result = await requestRoute(plugin, opts, this.startPosition.location, this.endPosition.location)
+          this.Polyline = result.plugin
+          this.routes = result.routes
         } catch (err) {
           console.log('路线规划失败:', err)
           this.routeVisible = false
@@ -224,6 +254,26 @@ export default {
     // 调整路线规划弹窗高度
     adjustRouteHeight() {
       this.routeDown = !this.routeDown
+    },
+    // 保存出行记录
+    async handleSave() {
+      try {
+        const startLngLat = [this.startPosition.location.lng, this.startPosition.location.lat]
+        const endLngLat = [this.endPosition.location.lng, this.endPosition.location.lat]
+        const record = {
+          type: this.selectTool.toLowerCase(),
+          distance: this.routes[0].distance,
+          time: this.routes[0].time,
+          start: startLngLat,
+          end: endLngLat,
+          city: this.city,
+        }
+        const result = await insertTravelRecord(record)
+        this.$toast('记录保存成功')
+        this.$router.push('/')
+      } catch (err) {
+        this.$toast('记录保存失败')
+      }
     },
   },
 }
@@ -313,20 +363,21 @@ export default {
   }
   .popup {
     &.tips-popup {
-      height: 75%;
+      height: calc(100% - 300px);
+      .header {
+        text-align: center;
+      }
     }
     &.route-popup {
       height: 50%;
       transition: all ease-out 0.3s;
       &.down {
-        height: 65px;
+        height: 60px;
       }
     }
     .header {
-      height: 70px;
-      padding: 0 20px;
-      line-height: 70px;
-      border-bottom: 1px solid #eee;
+      padding: 0 10px;
+      overflow: hidden;
       .text {
         font-size: 13px;
         color: #999;
@@ -334,7 +385,7 @@ export default {
       }
     }
     .content {
-      height: calc(100% - 70px);
+      height: calc(100% - 60px);
       overflow: auto;
     }
   }
