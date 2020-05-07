@@ -35,10 +35,10 @@ export default {
       visible: false
     }
   },
-  mounted() {
+  async mounted() {
     this.visible = true
-    this.getCities()
-    this.drawBounds()
+    await this.getCities()
+    await this.drawBounds()
   },
   methods: {
     async getCities() {

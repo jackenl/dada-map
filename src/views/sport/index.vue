@@ -2,7 +2,7 @@
   <div class="sport">
     <div class="page-bg"></div>
     <header class="header">
-      <div class="header-top">
+      <div class="header-top" @click="onShowRecord">
         <div class="header-top-text">{{ distance | distanceFilter }}</div>
         <div class="header-top-label">累计{{ tabs[activeTab].title }}总公里</div>
       </div>
@@ -85,6 +85,9 @@ export default {
       const result = await getSportData()
       this.sportData = result
     },
+    onShowRecord() {
+      this.$router.push('/sportRecord')
+    }
   }
 }
 </script>

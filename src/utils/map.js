@@ -6,7 +6,6 @@ export function geoLocation(options) {
     window.AMap.plugin('AMap.Geolocation', () => {
       const geolocation = new window.AMap.Geolocation(options)
       geolocation.getCurrentPosition((status, result) => {
-        console.log(result)
         if (status === 'complete') {
           resolve(result.position)
         } else {
@@ -29,7 +28,6 @@ export function getAddress(lnglat) {
         city: '010',
       })
       geocoder.getAddress(lnglat, (status, result) => {
-        console.log(result)
         if (status === 'complete') {
           // result为对应的地理位置详细信息
           let city = ''
@@ -62,7 +60,6 @@ export function getLocation(keywords) {
 
       geocoder.getLocation(keywords, (status, result) => {
         if (status === 'complete') {
-          console.log(result)
           const lnglat = result.geocodes[0].location
           resolve(lnglat)
         } else {
@@ -83,7 +80,6 @@ export function districtSearch(options, keywords) {
     window.AMap.plugin('AMap.DistrictSearch', () => {
       const districtSearch = new window.AMap.DistrictSearch(options)
       districtSearch.search(keywords, (status, result) => {
-        console.log(result)
         if (status === 'complete') {
           const district = result.districtList[0]
           resolve(district)
@@ -105,7 +101,6 @@ export function autoComplete(options, keywords) {
     window.AMap.plugin('AMap.AutoComplete', () => {
       const autoComplete = new window.AMap.Autocomplete(options)
       autoComplete.search(keywords, (status, result) => {
-        console.log(result)
         if (status === 'complete') {
           resolve(result.tips)
         } else {
@@ -126,7 +121,6 @@ export function placeSearch(options, keywords) {
     window.AMap.plugin('AMap.PlaceSearch', () => {
       const placeSearch = new window.AMap.PlaceSearch(options)
       placeSearch.search(keywords, (status, result) => {
-        console.log(result)
         if (status === 'complete') {
           resolve(result.poiList.pois)
         } else {
@@ -169,7 +163,6 @@ export function requestRoute(plugin ,options, origin, destination) {
         reject('MISSING_REQUIRED_PARAMS')
       }
       route.search(origin, destination, (status, result) => {
-        console.log(result)
         if (status === 'complete') {
           const routes = plugin === 'AMap.Transfer' ? result.plans : result.routes
           resolve({
