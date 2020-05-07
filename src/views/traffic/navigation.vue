@@ -255,7 +255,7 @@ export default {
     adjustRouteHeight() {
       this.routeDown = !this.routeDown
     },
-    // 保存出行记录
+    // 保存行程记录
     async handleSave() {
       try {
         const startLngLat = [this.startPosition.location.lng, this.startPosition.location.lat]

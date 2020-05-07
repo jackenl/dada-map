@@ -9,20 +9,36 @@ const userRoutes = [
   },
   {
     path: '/userInfo',
-    name: 'user-info',
+    name: 'userInfo',
     component: () => import('@/views/user/user-info'),
     meta: {
-      title: '个人资料'
-    }
+      title: '个人资料',
+    },
   },
   {
     path: '/userMap',
-    name: 'user-map',
+    name: 'userMap',
     component: () => import('@/views/user/user-map'),
     meta: {
-      title: '点亮城市'
-    }
-  }
+      title: '点亮城市',
+    },
+  },
+  {
+    path: '/travelRecord',
+    name: 'travelRecord',
+    component: () => import('@/views/user/travel-record'),
+    meta: {
+      title: '行程记录',
+    },
+  },
+  {
+    path: '/travelDetail',
+    name: 'travelDetail',
+    component: () => import('@/views/user/travel-detail'),
+    meta: {
+      title: '出行详情',
+    },
+  },
 ]
 
 export default userRoutes

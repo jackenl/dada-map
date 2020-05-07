@@ -12,11 +12,11 @@
         </div>
         <div class="label-group">
           <div class="label-cell">
-            <div class="value">{{ count.speed | speedFormat }}</div>
+            <div class="value">{{ count.speed | formatSpeed }}</div>
             <div class="label">配速</div>
           </div>
           <div class="label-cell">
-            <div class="value">{{ count.time | timeFormat }}</div>
+            <div class="value">{{ count.time | formatTime }}</div>
             <div class="label">时间</div>
           </div>
           <div class="label-cell">
@@ -37,18 +37,18 @@
 <script>
 import { Popup, Dialog, Field } from 'vant'
 import Map from '@/components/Map'
-import { timeFormat, speedFormat } from '@/utils/format'
-import { geoLocation } from '@/utils/map';
+import { formatTime, formatSpeed } from '@/utils/format'
+import { geoLocation } from '@/utils/map'
 
 export default {
   name: 'sport-map',
   components: {
     'van-popup': Popup,
-    Map
+    Map,
   },
   filters: {
-    timeFormat: timeFormat,
-    speedFormat: speedFormat,
+    formatTime,
+    formatSpeed,
     distanceFormat(value) {
       return Math.floor(value / 1000).toFixed(2)
     },
@@ -76,7 +76,7 @@ export default {
       } else {
         return '暂停'
       }
-    }
+    },
   },
   mounted() {
     this.title = this.$route.query.title || ''
@@ -85,7 +85,7 @@ export default {
       if (this.$refs.map.geolocationer) {
         this.countUp()
       }
-    }, 3000);
+    }, 3000)
   },
   methods: {
     mapToggle() {
@@ -109,7 +109,7 @@ export default {
       this.$toast('记录已保存')
       const timer = setTimeout(() => {
         this.$router.go(-1)
-      }, 2000);
+      }, 2000)
     },
     // 轮询获取实时定位并且计算相关数据
     countUp() {
@@ -135,15 +135,15 @@ export default {
         } catch (err) {
           this.$toast('定位失败')
         }
-      }, 1000);
-    }
+      }, 1000)
+    },
   },
   beforeDestroy() {
     // 销毁计时器
     if (this.timer) {
       clearInterval(this.timer)
     }
-  }
+  },
 }
 </script>
 
@@ -154,10 +154,10 @@ export default {
   .over-lay {
     height: 20%;
     background-image: linear-gradient(rgba(25, 25, 25, 0.95) 0%, rgba(25, 25, 25, 1) 40%);
-    transition: all ease-out .3s;
+    transition: all ease-out 0.3s;
     .content {
       margin-top: 0;
-      transition: all ease-out .2s;
+      transition: all ease-out 0.2s;
       .distance-block {
         text-align: center;
         .value {

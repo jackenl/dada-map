@@ -62,9 +62,11 @@ router.beforeEach(async (to, from, next) => {
 })
 
 // router afterEach
-router.afterEach(() => {
-  // 进行浏览器定位
-  store.dispatch('position/updateGeoLocation')
+router.afterEach((to, from ) => {
+  if (to.path !== '/login') {
+    // 进行浏览器定位
+    store.dispatch('position/updateGeoLocation')
+  }
 })
 
 export default router

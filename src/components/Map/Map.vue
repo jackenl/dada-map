@@ -166,7 +166,6 @@ export default {
     getCurrentPosition() {
       return new Promise((resolve, reject) => {
         this.geolocationer.getCurrentPosition((status, result) => {
-          console.log(result)
           if (status === 'complete') {
             resolve(result.position)
           } else {
