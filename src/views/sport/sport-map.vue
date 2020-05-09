@@ -1,33 +1,33 @@
 <template>
   <div class="sport-map">
     <Map ref="map" height="103%" />
-    <van-popup class="over-lay" :class="{ active: active }" :value="overlay" :overlay="false" position="bottom">
+    <van-popup class="over-lay" :class="{ active: active }" :value="true" :overlay="false" position="bottom">
       <div v-show="active" class="header">
         <span>{{ title }}</span>
       </div>
       <div class="content">
         <div class="distance-block">
-          <div class="value">{{ count.distance | distanceFormat }}</div>
+          <div class="value">{{ distance | distanceFormat }}</div>
           <div class="label">公里</div>
         </div>
         <div class="label-group">
           <div class="label-cell">
-            <div class="value">{{ count.speed | formatSpeed }}</div>
+            <div class="value">{{ speed | formatSpeed }}</div>
             <div class="label">配速</div>
           </div>
           <div class="label-cell">
-            <div class="value">{{ count.time | formatTime }}</div>
+            <div class="value">{{ time | formatTime }}</div>
             <div class="label">时间</div>
           </div>
           <div class="label-cell">
-            <div class="value">{{ count.calories }}</div>
+            <div class="value">{{ calories }}</div>
             <div class="label">千卡</div>
           </div>
         </div>
       </div>
-      <div class="map-icon" @click="mapToggle"></div>
+      <div v-if="status !== 3" class="map-icon" @click="mapToggle"></div>
       <div class="btn" v-show="active">
-        <button @click="timerToggle" :class="{ primary: status }">{{ btnText }}</button>
+        <button @click="timerToggle" :class="{ primary: status !== 1 }">{{ btnText }}</button>
         <button v-if="status === 1" class="error" @click="handleStop">结束</button>
       </div>
     </van-popup>
@@ -37,8 +37,10 @@
 <script>
 import { Popup, Dialog, Field } from 'vant'
 import Map from '@/components/Map'
+import { insertSportRecord } from '@/api/sport'
 import { formatTime, formatSpeed } from '@/utils/format'
-import { geoLocation } from '@/utils/map'
+import { geoLocation, convertFrom } from '@/utils/map'
+import sportTypes from '@/config/sportTypes'
 
 export default {
   name: 'sport-map',
@@ -50,91 +52,134 @@ export default {
     formatTime,
     formatSpeed,
     distanceFormat(value) {
-      return Math.floor(value / 1000).toFixed(2)
+      return (value / 1000).toFixed(1)
     },
   },
   data() {
     return {
-      overlay: false,
-      active: true,
-      title: '跑步',
-      count: {
-        distance: 0,
-        speed: 0,
-        time: 0,
-        calories: 0,
-      },
-      status: 0,
-      timer: null,
-      path: [], // 经过地点
+      map: null, // 地图实例
+      active: true, // 是否
+      sportType: 'transfer', // 运动类型
+      distance: 0, // 运动距离
+      time: 0, // 运动时间
+      status: 0, // 运动状态 0:未开始，1:进行中，2:暂停中，3:已结束
+      timer: null, // 计时器
+      watchId: null, // 定位监听器
+      path: [[114.175328, 22.316554]], // 经过地点
     }
   },
+  //[114.274328, 22.416554]
   computed: {
+    title() {
+      let str = ''
+      sportTypes.forEach(item => {
+        if (item.value === this.sportType) {
+          str = item.label
+          return
+        }
+      })
+      return str
+    },
     btnText() {
       if (this.status === 1) {
+        return '暂停'
+      } else if (this.status === 2) {
         return '继续'
       } else {
-        return '暂停'
+        return '开始'
       }
+    },
+    speed() {
+      if (this.distance === 0) {
+        return 0
+      } else {
+        return Math.ceil((1000 / this.distance)  * this.time)
+      }
+    },
+    calories() {
+      return (this.distance * 0.095).toFixed(1)
     },
   },
   mounted() {
-    this.title = this.$route.query.title || ''
-    this.overlay = true
-    setTimeout(() => {
-      if (this.$refs.map.geolocationer) {
-        this.countUp()
-      }
-    }, 3000)
+    const type = this.$route.query.type
+    this.sportType = type
+    this.map = this.$refs.map
   },
   methods: {
     mapToggle() {
       this.active = !this.active
     },
     timerToggle() {
-      if (this.status === 1) {
-        this.status = 0
-        this.countUp()
-      } else if (this.status === 0) {
+      if (this.status === 0 || this.status === 2) {
         this.status = 1
+        this.countUp()
+        this.watchPosition()
+      } else if (this.status === 1) {
+        this.status = 2
         clearInterval(this.timer)
-        this.count.speed = 0 // 清零速度
         this.timer = null
+        navigator.geolocation.clearWatch(this.watchId)
+        this.watchId = null
       }
     },
     // 停止运动
     handleStop() {
       clearInterval(this.timer)
-      this.overlay = false
-      this.$toast('记录已保存')
-      const timer = setTimeout(() => {
-        this.$router.go(-1)
-      }, 2000)
+      navigator.geolocation.clearWatch(this.watchId)
+      this.status = 3
+      this.active = false
+      this.submitRecord()
+    },
+    // 上传运动记录
+    async submitRecord() {
+      try {
+        const formData = {
+          type: this.sportType,
+          path: this.path,
+          distance: this.distance,
+          time: this.time,
+          speed: this.speed,
+          calories: this.calories
+        }
+        const result = await insertSportRecord(formData)
+        this.$toast('记录已保存')
+      } catch (err) {
+        console.log(err)
+        this.$toast('记录上传失败')
+      }
+    },
+    // 监听定位改变
+    watchPosition() {
+      try {
+        if (!this.watchId) {
+          const that = this
+          this.watchId = navigator.geolocation.watchPosition(async (position) => {
+            console.log(position)
+            const gps = [position.coords.longitude, position.coords.latitude]
+            const result  = await convertFrom(gps, 'gps')
+            const p1 = [result.lng, result.lat]
+            if (this.path.length > 0) {
+              const p2 = that.path[that.path.length - 1]
+              if (JSON.stringify(p1) !== JSON.stringify(p2)) {
+                this.path.push(p1)
+                const distance = Math.ceil(window.AMap.GeometryUtil.distance(p1, p2))
+                that.distance += distance
+              }
+            } else {
+              this.path.push(p1)
+            }
+            this.map.setPolyline(this.path) // 描绘运动轨迹
+          })
+        }
+      } catch (err) {
+        console.log(err)
+        this.$toast('定位失败')
+      }
     },
     // 轮询获取实时定位并且计算相关数据
     countUp() {
       this.timer = setInterval(async () => {
-        this.count.time++
-        const map = this.$refs.map
-        try {
-          const location = await map.getCurrentPosition()
-          const p1 = [location.lng, location.lat]
-          const p2 = this.path[this.path.length - 1]
-          if (p2) {
-            if (JSON.stringify(p2) !== JSON.stringify(p1)) {
-              const distance = window.AMap.GeometryUtil.distance(p1, p2)
-              this.count.distance += distance
-              // this.count.speed = distance
-              this.count.calories = Math.floor(distance / 10).toFixed(0)
-              this.path.push(p1)
-              map.setPolyline(this.path) // 描绘运动轨迹
-            }
-          } else {
-            this.path.push(p1)
-          }
-        } catch (err) {
-          this.$toast('定位失败')
-        }
+        this.time++
       }, 1000)
     },
   },

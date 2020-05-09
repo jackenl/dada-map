@@ -39,6 +39,22 @@ const userRoutes = [
       title: '出行详情',
     },
   },
+  {
+    path: '/travelTrend',
+    name: 'travelTrend',
+    component: () => import('@/views/user/travel-trend'),
+    meta: {
+      title: '出行趋势',
+    }
+  },
+  {
+    path: '/travelAnalyze',
+    name: 'travelAnalyze',
+    component: () => import('@/views/travel/travel-analyze'),
+    meta: {
+      title: '数据分析'
+    }
+  }
 ]
 
 export default userRoutes

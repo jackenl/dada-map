@@ -45,7 +45,6 @@ export default {
     return {
       record: {},
       recordId: '',
-      map: null,
     }
   },
   mounted() {

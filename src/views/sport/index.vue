@@ -3,7 +3,7 @@
     <div class="page-bg"></div>
     <header class="header">
       <div class="header-top" @click="onShowRecord">
-        <div class="header-top-text">{{ distance | distanceFilter }}</div>
+        <div class="header-top-text">{{ distance | formatDistance }}</div>
         <div class="header-top-label">累计{{ tabs[activeTab].title }}总公里</div>
       </div>
       <van-tabs
@@ -34,6 +34,7 @@
 import { Tab, Tabs } from 'vant'
 import Map from '@/components/Map'
 import { getSportData } from '@/api/sport'
+import { formatDistance } from '@/utils/format'
 
 export default {
   name: 'sport',
@@ -43,10 +44,7 @@ export default {
     Map
   },
   filters: {
-    distanceFilter(value) {
-      if (!value) value = 0
-      return value.toFixed(1)
-    }
+    formatDistance,
   },
   data() {
     return {
@@ -62,7 +60,7 @@ export default {
   },
   computed: {
     distance() {
-      return this.sportData[this.sportType]
+      return this.sportData[this.sportType] || 0
     }
   },
   created() {
@@ -73,11 +71,10 @@ export default {
       this.sportType = this.tabs[index].name
     },
     handleBegin() {
-      const title = this.tabs[this.activeTab].title
       this.$router.push({
         path: '/sportMap',
         query: {
-          title: title
+          type: this.sportType
         }
       })
     },

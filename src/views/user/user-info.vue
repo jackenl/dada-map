@@ -6,7 +6,7 @@
         <div class="avatar">
           <van-icon class-prefix="my-icon" name="user" size="40" color="#999"></van-icon>
         </div>
-        <div class="user-name">jacken</div>
+        <div class="user-name">{{ userInfo.nickname }}</div>
         <div class="more-info">
           <span>男</span>
           <span>广东省，广州市</span>
@@ -15,12 +15,14 @@
         <desc-list></desc-list>
       </header>
     </div>
+    <div class="sigout-btn" @click="handleLogout">退出登陆</div>
   </div>
 </template>
 
 <script>
 import { Icon } from 'vant'
 import DescList from './components/desc-list'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'user-info',
@@ -31,8 +33,15 @@ export default {
   data() {
     return {}
   },
-  created() {},
-  mounted() {},
+  computed: {
+    ...mapState('user', ['userInfo']),
+  },
+  methods: {
+    ...mapActions('user', ['logout']),
+    handleLogout() {
+      this.logout()
+    }
+  }
 }
 </script>
 
@@ -60,6 +69,11 @@ export default {
         overflow:hidden;
       }
     }
+  }
+  .sigout-btn {
+    position: absolute;
+    top: 30px;
+    right: 20px;
   }
 }
 </style>

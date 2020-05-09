@@ -52,9 +52,11 @@ const actions = {
 
   // user logout
   logout({ commit, state }) {
+    console.log('fdf')
     return new Promise((resolve, reject) => {
       removeToken()
       commit('RESET_STATE')
+      location.reload()
       resolve()
     })
   }

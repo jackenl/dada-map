@@ -8,14 +8,9 @@ function resolve(dir) {
 const port = process.env.port || process.env.npm_config_port || 8080
 
 module.exports = {
-  publicPath: '/',
+  publicPath: './',
   outputDir: 'dist',
   assetsDir: 'static',
-  pages: {
-    index: {
-      title: '哒哒出行'
-    }
-  },
   lintOnSave: process.env.NODE_ENV !== 'production',
   productionSourceMap: false,
   devServer: {
@@ -25,7 +20,6 @@ module.exports = {
       warnings: false,
       errors: true,
     },
-    before: require('./mock/mock-server.js')
   },
   configureWebpack: {
     resolve: {
@@ -35,9 +29,6 @@ module.exports = {
     }
   },
   chainWebpack: config => {
-    // config.plugins.delete('preload')
-    // config.plugins.delete('prefetch')
-
     // set svg-sprite-loader
     config.module
       .rule('svg')
@@ -61,9 +52,14 @@ module.exports = {
       .use('vue-loader')
       .loader('vue-loader')
       .tap(options => {
-        // options.compilerOptions.preserveWhitespace = true
+        options.compilerOptions.preserveWhitespace = true
         return options
       })
       .end()
+
+      config
+        .when(process.env.NODE_ENV === 'development',
+          config => config.devtool('cheap-source-map')
+        )
   }
 }

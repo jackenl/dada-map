@@ -21,7 +21,7 @@
       error-text="请求失败，点击重新加载"
       @load="onLoad"
     >
-      <van-cell v-for="record in recordList" :key="record.id" :to="`/travelDetail?id=${record.id}`" center>
+      <van-cell v-for="record in recordList" :key="record.id" :to="`/sportDetail?id=${record.id}`" center>
         <div slot="title">{{ record.sport }} {{ record.distance | formatDistance }}公里</div>
         <div slot="label" class="cell-label">
           <div class="label-tag">用时：{{ record.time | formatTime }}</div>
@@ -36,7 +36,7 @@
 <script>
 import { List, Cell, Empty } from 'vant'
 import { getSportRecordsByPage, getSportData } from '@/api/sport'
-import sportTypes from '@/config/sportType'
+import sportTypes from '@/config/sportTypes'
 import { parseTime } from '@/utils/index'
 import { formatDistance, formatSpeed, formatTime } from '@/utils/format'
 

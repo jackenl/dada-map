@@ -1,5 +1,5 @@
 import { SET_GEOLOCATION, SET_ADDRESS } from '../mutationTypes'
-import { geoLocation, getAddress } from '@/utils/map'
+import { convertFrom, getAddress } from '@/utils/map'
 import cities from '@/config/city.json'
 import { insertCity } from '@/api/travel'
 
@@ -49,12 +49,15 @@ const mutations = {
 
 const actions = {
   // 进行定位
-  async updateGeoLocation({ dispatch, commit, state }) {
+  updateGeoLocation({ dispatch, commit, state }) {
     if (!state.hasGeoLocation) {
       try {
-        const result = await geoLocation()
-        commit(SET_GEOLOCATION, result)
-        dispatch('updateAddress')
+          navigator.geolocation.getCurrentPosition(async position => {
+          const gps = [position.coords.longitude, position.coords.latitude]
+          const result  = await convertFrom(gps, 'gps')
+          commit(SET_GEOLOCATION, result)
+          dispatch('updateAddress')
+        })
       } catch (err) {
         console.log('定位失败：', err)
       }
