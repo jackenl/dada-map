@@ -15,7 +15,7 @@
 
 <script>
 import { Icon } from 'vant'
-import { geoLocation } from '@/utils/map';
+import { geoLocation } from '@/utils/map'
 
 export default {
   name: 'name',
@@ -25,11 +25,11 @@ export default {
   props: {
     width: {
       type: String,
-      default: '100%'
+      default: '100%',
     },
     height: {
       type: String,
-      default: '100%'
+      default: '100%',
     },
     // 高德地图地图实例配置参数
     options: {
@@ -99,7 +99,7 @@ export default {
         }
       }
       return style
-    }
+    },
   },
   mounted() {
     this.createMap()
@@ -109,7 +109,7 @@ export default {
       this.map = new window.AMap.Map('container', this.options)
       this.addControl()
       if (this.traffic) {
-      // 添加实时路况图层
+        // 添加实时路况图层
         this.trafficLayer = new window.AMap.TileLayer.Traffic()
       }
       if (this.satellite) {
@@ -155,11 +155,13 @@ export default {
         this.geolocationer = new window.AMap.Geolocation(opts)
         // 添加定位控件
         this.map.addControl(this.geolocationer)
-        this.getCurrentPosition().then(res => {
-          this.location = res
-        }).catch(err => {
-          console.log('定位失败：', err)
-        })
+        this.getCurrentPosition()
+          .then((res) => {
+            this.location = res
+          })
+          .catch((err) => {
+            console.log('定位失败：', err)
+          })
       })
     },
     // 获取当前位置
@@ -201,7 +203,7 @@ export default {
       }
       const { lng, lat } = location
       this.marker = new window.AMap.Marker({
-        position: new window.AMap.LngLat(lng, lat),   // 经纬度对象
+        position: new window.AMap.LngLat(lng, lat), // 经纬度对象
       })
       this.map.add(this.marker) // 添加标记
       this.map.setCenter([lng, lat]) // 修改地图中心
@@ -212,16 +214,16 @@ export default {
       }
       this.polyline = new window.AMap.Polyline({
         path: path,
-        strokeColor: "#3366FF", 
-        strokeWeight: 4,
-         strokeOpacity: 1,
+        strokeColor: '#0a96fa',
+        strokeWeight: 8,
+        strokeOpacity: 1,
         lineJoin: 'round',
         lineCap: 'round',
         zIndex: 10,
       })
       this.map.add(this.polyline)
-      this.map.setFitView([ this.polyline ])
-    }
+      this.map.setFitView([this.polyline])
+    },
   },
 }
 </script>
@@ -236,7 +238,7 @@ export default {
     height: 72px;
     overflow: hidden;
     border-radius: 10px;
-    background-color: rgba(0,0,0,.4);
+    background-color: rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
     justify-content: center;

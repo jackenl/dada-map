@@ -30,6 +30,10 @@
           <p slot="label">{{ distance | formatDistance }}公里</p>
         </van-cell>
       </div>
+      <!-- 基础功能 -->
+      <user-tool :title="mainTools.title" :toolList="mainTools.list" />
+      <!-- 更多功能 -->
+      <user-tool :title="moreTools.title" :toolList="moreTools.list" />
     </div>
   </div>
 </template>
@@ -37,6 +41,7 @@
 <script>
 import { Cell, CellGroup, Icon } from 'vant'
 import DescList from './components/desc-list'
+import UserTool from './components/user-tool'
 import { mapState } from 'vuex'
 import { getTravelData } from '@/api/travel'
 import { formatDistance } from '@/utils/format'
@@ -47,6 +52,7 @@ export default {
     'van-cell': Cell,
     'van-icon': Icon,
     DescList,
+    UserTool,
   },
   filters: {
     formatDistance,
@@ -54,6 +60,30 @@ export default {
   data() {
     return {
       travelData: '', // 出行数据
+      mainTools: {
+        title: '基础功能',
+        list: [
+          { name: '出行记录', icon: 'mileage', path: '/travelRecord' },
+          { name: '出行趋势', icon: 'trend', path: '/travelTrend' },
+          { name: '数据分析', icon: 'Analysis' },
+          { name: '成就殿堂', icon: 'Medal' },
+        ],
+      },
+      moreTools: {
+        title: '更多功能',
+        list: [
+          { name: '出行计划', icon: 'p1' },
+          { name: '好友排名', icon: 'p2' },
+          { name: '路况分析', icon: 'p3' },
+          { name: '交通补助', icon: 'p4' },
+          { name: '体重管理', icon: 'p5' },
+          { name: '个人周报', icon: 'p6' },
+          { name: '风险管控', icon: 'p7' },
+          { name: '运动课堂', icon: 'p8' },
+          { name: '智能硬件', icon: 'p9' },
+          { name: '个人会员', icon: 'p10' },
+        ],
+      },
     }
   },
   computed: {
@@ -87,6 +117,7 @@ export default {
   .container {
     height: 100%;
     padding-top: 200px;
+    padding-bottom: 100px;
     overflow: auto;
     .header {
       margin: 0 20px;
@@ -131,7 +162,7 @@ export default {
       .travel-cell {
         flex: 1;
         border-radius: 10px;
-        margin: 20px;
+        margin: 20px 20px 0;
         &:last-child {
           margin-left: 0;
         }

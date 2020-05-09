@@ -176,3 +176,16 @@ export function requestRoute(plugin ,options, origin, destination) {
     })
   })
 }
+
+export function convertFrom(lnglat, type) {
+  return new Promise((resolve, reject) => {
+    window.AMap.convertFrom(lnglat, type, (status, result) => {
+      if (result.info === 'ok') {
+        const location = result.locations[0]; // Array.<LngLat>
+        resolve(location)
+      } else {
+        reject(result)
+      }
+    });
+  })
+}

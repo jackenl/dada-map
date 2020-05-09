@@ -22,6 +22,11 @@ const homeRoutes = [
     meta: {
       title: '运动记录',
     }
+  },
+  {
+    path: '/sportDetail',
+    name: 'sportDetail',
+    component: () => import('@/views/sport/sport-detail')
   }
 ]
 
