@@ -21,14 +21,14 @@ module.exports = {
       errors: true,
     },
   },
-  configureWebpack: {
-    resolve: {
-      alias: {
-        '@': resolve('src')
-      }
+  configureWebpack: config => {
+    if (process.env.NODE_ENV === 'production') {
+      config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true // 移除 console
     }
   },
   chainWebpack: config => {
+    config.resolve.alias
+      .set('@', resolve('src'))
     // set svg-sprite-loader
     config.module
       .rule('svg')
