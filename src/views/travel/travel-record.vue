@@ -6,7 +6,7 @@
         <div class="content-value">
           <span>{{ allDistance | formatDistance }}</span> 公里
         </div>
-        <div class="content-label">{{ total }} 次出行</div>
+        <div class="content-label">共 {{ total }} 次出行</div>
       </div>
     </div>
     <van-empty v-if="recordList.length === 0" description="暂无记录" />

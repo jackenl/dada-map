@@ -120,6 +120,7 @@ export default {
       display: flex;
       .pic-info {
         width: 150px;
+        height: 150px;
         margin-right: 30px;
       }
       .recommend-main {

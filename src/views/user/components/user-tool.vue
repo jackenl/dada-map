@@ -62,11 +62,8 @@ export default {
   border-radius: 20px;
   color: #333;
   &-title {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1;
-    padding-bottom: 30px;
-    border-bottom: 1px solid #eee;
+    font-size: 12px;
+    color: #333;
   }
   &-bar {
     display: flex;

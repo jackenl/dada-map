@@ -6,7 +6,7 @@
         <van-cell title-class="cell-title" value-class="cell-value" to="/userInfo" center is-link>
           <div class="avatar" slot="title">
             <van-icon v-if="!userInfo.avatar" class-prefix="my-icon" name="user" size="40" color="#999"></van-icon>
-            <img v-else src="" />
+            <img v-else :src="userInfo.avatar" />
           </div>
           <div class="cell-right" slot="default">
             <p class="cell-right-title">{{ userInfo.nickname }}</p>
@@ -117,7 +117,7 @@ export default {
   .container {
     height: 100%;
     padding-top: 200px;
-    padding-bottom: 100px;
+    padding-bottom: 50px;
     overflow: auto;
     .header {
       margin: 0 20px;
@@ -140,7 +140,7 @@ export default {
       .cell-right {
         color: #333;
         &-title {
-          font-size: 20px;
+          font-size: 18px;
           line-height: 1;
         }
         .tag-list {
