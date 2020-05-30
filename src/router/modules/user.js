@@ -24,22 +24,6 @@ const userRoutes = [
     },
   },
   {
-    path: '/travelRecord',
-    name: 'travelRecord',
-    component: () => import('@/views/user/travel-record'),
-    meta: {
-      title: '行程记录',
-    },
-  },
-  {
-    path: '/travelDetail',
-    name: 'travelDetail',
-    component: () => import('@/views/user/travel-detail'),
-    meta: {
-      title: '出行详情',
-    },
-  },
-  {
     path: '/travelTrend',
     name: 'travelTrend',
     component: () => import('@/views/user/travel-trend'),

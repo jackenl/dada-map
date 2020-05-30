@@ -6,7 +6,7 @@ function getBaseURL() {
   if (process.env.NODE_ENV === 'development') {
     return 'http://localhost:3000'
   } else if (process.env.NODE_ENV === 'production') {
-    return 'http://120.79.60.230/api'
+    return 'http://120.79.60.230:3000'
   }
 }
 
