@@ -66,7 +66,7 @@ router.beforeEach(async (to, from, next) => {
 router.afterEach((to, from) => {
   if (to.path !== '/login') {
     // 进行浏览器定位
-    store.dispatch('position/updateGeoLocation')
+    // store.dispatch('position/updateGeoLocation')
   }
 })
 

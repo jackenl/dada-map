@@ -33,7 +33,7 @@
       <!-- 基础功能 -->
       <user-tool :title="mainTools.title" :toolList="mainTools.list" />
       <!-- 更多功能 -->
-      <user-tool :title="moreTools.title" :toolList="moreTools.list" />
+      <!-- <user-tool :title="moreTools.title" :toolList="moreTools.list" /> -->
     </div>
   </div>
 </template>

@@ -4,18 +4,19 @@
     <recommend-swipe :keyword="searchValue" />
     <!-- 推荐列列表 -->
     <div class="recommend">
-      <van-cell-group title="猜你喜欢">
-        <van-cell v-for="(recommend, index) in recommendList.poi_list" :key="index">
-          <div class="recommend-cell" slot="title" @click="onShowRecommend(recommend.id)">
-            <img class="pic-info" :src="getDomainInfo(recommend.domain_list, 'pic_info')">
+      <van-cell-group title="附近美食">
+        <van-cell v-for="(recommend, index) in recommendList" :key="index">
+          <div class="recommend-cell" slot="title" @click="onShowRecommend(recommend.detail)">
+            <img class="pic-info" :src="recommend.frontImg" />
             <div class="recommend-content">
-              <div class="recommend-name">{{ recommend.name }}</div>
+              <div class="recommend-name">{{ recommend.title }}</div>
               <div class="recommend-main">
-                <van-rate :value="getRating(recommend.rating)" size="14px" />
-                <span class="recommend-rate">{{ recommend.rating }}</span>
-                <span class="recommend-money" v-html="`${getDomainInfo(recommend.domain_list, 'price')}`"></span>
+                <van-rate :value="recommend.avgScore" size="14px" />
+                <span class="recommend-rate">{{ recommend.avgScore }}</span>
+                人均
+                <span class="recommend-money">¥{{ recommend.avgPrice }}</span>
               </div>
-              <div class="recommend-tag" v-html="`${getDomainInfo(recommend.domain_list, 'tag')}`"></div>
+              <div class="recommend-label">{{ recommend.address }}</div>
             </div>
           </div>
         </van-cell>
@@ -42,7 +43,7 @@
 import { Search, Icon, CellGroup, Cell, Rate } from 'vant'
 import RecommendSwipe from './components/recommend-swipe'
 import { mapGetters } from 'vuex'
-import { recommend } from '@/api/nearby'
+import { getList } from '@/api/nearby'
 
 export default {
   name: 'nearby',
@@ -57,7 +58,7 @@ export default {
   data() {
     return {
       searchValue: '',
-      recommendList: {}
+      recommendList: {},
     }
   },
   computed: {
@@ -68,15 +69,24 @@ export default {
   },
   methods: {
     onSearch() {
-      const path = `https://uri.amap.com/search?keyword=${this.searchValue}&center=${this.lnglat}&city=${this.cityCode}&view=list&src=mypage&coordinate=gaode&callnative=0`
-      window.location.href = path
+      this.$router.push({
+        path: '/search',
+        query: {
+          title: this.searchValue
+        }
+      })
     },
     async getRecommend() {
-      this.recommendList = await recommend()
+      const result = await getList({
+        city: this.cityText,
+        pageSize: 15,
+        page: 1,
+      })
+      this.recommendList = result.data.data.rows
     },
     getDomainInfo(domain_list, name) {
       let str = ''
-      domain_list.forEach(item => {
+      domain_list.forEach((item) => {
         if (item.name === name) {
           str = item.value
         }
@@ -86,9 +96,14 @@ export default {
     getRating(value) {
       return Number(value)
     },
-    onShowRecommend(id) {
-      location.replace(`https://m.amap.com/detail/index/poiid=${id}`)
-    }
+    onShowRecommend(url) {
+      this.$router.push({
+        path: '/iframe',
+        query: {
+          url
+        }
+      })
+    },
   },
 }
 </script>
@@ -129,13 +144,19 @@ export default {
         .recommend-rate {
           display: inline-block;
           font-size: 12px;
+          padding-left: 5px;
           padding-right: 20px;
-          line-height: 1;
+          color: #999;
+          line-height: 28px;
         }
         .recommend-money {
           font-size: 12px;
-          line-height: 1;
+          line-height: 28px;
+          color: red;
         }
+      }
+      .recommend-label {
+        font-size: 12px;
       }
     }
   }

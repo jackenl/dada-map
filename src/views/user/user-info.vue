@@ -38,9 +38,7 @@
               <div class="sport-item-main-title">
                 {{ sport.label }}总距离 {{ sportData[sport.value] | formatDistance }} 公里
               </div>
-              <div class="sport-item-main-label">
-                最远距离 5.6 公里
-              </div>
+              <div class="sport-item-main-label">最远距离 {{ getLongestDistinct() }} 公里</div>
             </div>
           </div>
         </div>
@@ -78,12 +76,12 @@ export default {
     formatValue(value) {
       return value ? value : '未知'
     },
-    formatDistance: formatDistance
+    formatDistance: formatDistance,
   },
   data() {
     return {
       sportTypes: sportTypes,
-      sportData: {}
+      sportData: {},
     }
   },
   computed: {
@@ -106,7 +104,10 @@ export default {
       } else {
         return 'walk'
       }
-    }
+    },
+    getLongestDistinct() {
+      return (Math.random() * 10).toFixed(1)
+    },
   },
 }
 </script>

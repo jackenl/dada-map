@@ -7,6 +7,23 @@ const nearbyRoutes = [
       title: '附近',
     },
   },
+  {
+    path: '/iframe',
+    name: 'iframe',
+    component: () => import('@/views/nearby/iframe'),
+    meta: {
+      title: '窗口',
+    },
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => import('@/views/nearby/search'),
+    meta: {
+      title: '搜索',
+    },
+  },
+
 ]
 
 export default nearbyRoutes
