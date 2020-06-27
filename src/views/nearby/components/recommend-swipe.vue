@@ -2,7 +2,12 @@
   <van-swipe class="recommend-swipe" autoplay="none">
     <van-swipe-item v-for="(item, index) in recommends" class="recommend-list" :key="index">
       <template v-for="recommend in item">
-        <div class="recommend-cell" :key="recommend.value" :keyword="recommend.label" @click="getRecommend(recommend.label)">
+        <div
+          class="recommend-cell"
+          :key="recommend.value"
+          :keyword="recommend.label"
+          @click="getRecommend(recommend.keyword)"
+        >
           <div class="recommend-icon" :class="recommend.value"></div>
           <div class="recommend-cell-text">{{ recommend.label }}</div>
         </div>
@@ -13,51 +18,62 @@
 
 <script>
 import { Swipe, SwipeItem } from 'vant'
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'recommend-swipe',
   components: {
     'van-swipe': Swipe,
-    'van-swipe-item': SwipeItem
+    'van-swipe-item': SwipeItem,
   },
   data() {
     return {
       recommends: [
         [
-          { label: '美食',  value: 'food'},
-          { label: '酒店',  value: 'hotel'},
-          { label: '电影',  value: 'movie'},
-          { label: '景点',  value: 'viewpoint'},
-          { label: '银行',  value: 'bank'},
-          { label: '网吧',  value: 'internet'},
-          { label: '购物',  value: 'shopping'},
-          { label: '公厕',  value: 'toilet'},
+          { label: '美食', value: 'food', keyword: '' },
+          { label: '酒店', value: 'hotel', keyword: '酒店' },
+          { label: '电影', value: 'movie', keyword: '' },
+          { label: '景点', value: 'viewpoint', keyword: '' },
+          { label: '银行', value: 'bank', keyword: '' },
+          { label: '网吧', value: 'internet', keyword: '' },
+          { label: '购物', value: 'shopping', keyword: '' },
+          { label: '公厕', value: 'toilet', keyword: '' },
         ],
         [
-          { label: '公交', value: 'bus' },
-          { label: '地铁', value: 'subway' },
-          { label: '停车场', value: 'carpark'},
-          { label: '更多', value: 'more' },
-        ]
-      ]
+          { label: '公交', value: 'bus', keyword: '' },
+          { label: '地铁', value: 'subway', keyword: '' },
+          { label: '停车场', value: 'carpark', keyword: '' },
+          { label: '更多', value: 'more', keyword: '' },
+        ],
+      ],
     }
   },
   computed: {
-    ...mapGetters('position', ['lnglat', 'cityCode'])
+    ...mapGetters('position', ['lnglat', 'cityCode']),
   },
   methods: {
     getRecommend(keyword) {
-      let path = ''
-      if (keyword === '更多') {
-        const currentPage = encodeURIComponent(window.location.href)
-        path = `https://m.amap.com/searchmore/index/type=nearby&wm_referrer=${currentPage}&user_loc=${this.lnglat}`
-      } else {
-        path = `https://uri.amap.com/nearby?service=${keyword}&location=${this.lnglat}&city=${this.cityCode}&src=mypage&coordinate=gaode`
-      }
-      window.location.href = path
-    }
-  }
+      // let path = ''
+      // if (keyword === '更多') {
+      //   const currentPage = encodeURIComponent(window.location.href)
+      //   path = `https://m.amap.com/searchmore/index/type=nearby&wm_referrer=${currentPage}&user_loc=${this.lnglat}`
+      // } else {
+      //   path = `https://uri.amap.com/nearby?service=${keyword}&location=${this.lnglat}&city=${this.cityCode}&src=mypage&coordinate=gaode`
+      // }
+      // this.$router.push({
+      //   path: '/search',
+      //   query: {
+      //     url: path,
+      //   },
+      // })
+      this.$router.push({
+        path: '/search',
+        query: {
+          title: keyword
+        }
+      })
+    },
+  },
 }
 </script>
 

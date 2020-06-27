@@ -36,7 +36,7 @@ export default {
       default: () => {
         return {
           resizeEnable: true,
-          center: [116.397428, 39.90923],
+          center: [113.264434, 23.129162],
           zoom: 13,
         }
       },

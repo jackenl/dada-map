@@ -5,19 +5,19 @@ import { insertCity } from '@/api/travel'
 
 const state = {
   location: {
-    lng: 116.397428,
-    lat: 39.90923
+    lng: 114.057868,
+    lat: 22.543099,
   }, // 位置信息
-  city: '北京市', // 城市名称
+  city: '深圳市', // 城市名称
   address: '', // 地址
-  hasGeoLocation: false // 是否已经定位
+  hasGeoLocation: false, // 是否已经定位
 }
 
 const getters = {
-  lnglat: state => {
+  lnglat: (state) => {
     return [state.location.lng, state.location.lat]
   },
-  cityText: state => {
+  cityText: (state) => {
     const index = state.city.indexOf('市')
     if (index > -1) {
       return state.city.slice(0, index)
@@ -25,15 +25,15 @@ const getters = {
       return state.city.slice(0, 2)
     }
   },
-  cityCode: state => {
+  cityCode: (state) => {
     let code = ''
-    cities.forEach(item => {
+    cities.forEach((item) => {
       if (item.name === state.city) {
         code = item.code
       }
     })
     return code
-  }
+  },
 }
 
 const mutations = {
@@ -52,9 +52,9 @@ const actions = {
   updateGeoLocation({ dispatch, commit, state }) {
     if (!state.hasGeoLocation) {
       try {
-          navigator.geolocation.getCurrentPosition(async position => {
+        navigator.geolocation.getCurrentPosition(async (position) => {
           const gps = [position.coords.longitude, position.coords.latitude]
-          const result  = await convertFrom(gps, 'gps')
+          const result = await convertFrom(gps, 'gps')
           commit(SET_GEOLOCATION, result)
           dispatch('updateAddress')
         })
@@ -80,5 +80,5 @@ export default {
   state,
   getters,
   mutations,
-  actions
+  actions,
 }

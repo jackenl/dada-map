@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       chart: null,
-      xAxisData: ['11日', '12日', '13日', '14日', '15日', '16日', '17日'],
+      xAxisData: ['31日', '1日', '2日', '3日', '4日', '5日', '6日'],
       trafficData: null,
       tripData: null,
       data1: {
